@@ -5,40 +5,42 @@ from zapv2 import ZAPv2
 
 
 class Assesment:
-    def __init__(self, addresses):
+    def __init__(self, addresses, verbose):
 
-        self.API_key = ''
+        self.API_key = 'goqjhdjmm0vid6f7v2uftgn68d'
+        self.verbose = verbose
         self.addresses = addresses
         self.date = datetime.today().strftime('%Y-%m-%d')
         self.date_time = datetime.today().strftime('%Y-%m-%d %H:%M:%S')
         self.address_counter = 0
         
     
-    def scan_Website(self, address):
-        '''
-        #Scan website and record the output in a file
+    def active_Scan(self, address):
+
         fileName = f"{address}_{self.date}"
         #Create file
         open("fileName", "w").close()
-        to_run = f"./zap.sh {address} -daemon -quickurl -quickout {fileName}.html"
-        subprocess.Popen(to_run)'''
+
+        #Gets all of the sites directories
+        self.spider(address)
 
 
 
-        
-        zap = ZAPv2(apikey=self.API_key, proxies={'http': 'http://127.0.0.1:8080', 'https': 'http://127.0.0.1:8080'})
+    def spider(self, address):
 
-        scanID = zap.ascan.scan(address)
-        while int(zap.ascan.status(scanID)) < 100:
-            # Loop until the scanner has finished
-            print('Scan progress %: {}'.format(zap.ascan.status(scanID)))
-            time.sleep(5)
+        scanID = self.zap.spider.scan(address)
 
-        print('Active Scan completed')
-        # Print vulnerabilities found by the scanning
-        print('Hosts: {}'.format(', '.join(zap.core.hosts)))
-        print('Alerts: ')
-        pprint(zap.core.alerts(baseurl=address))
+        if self.verbose:
+            print(f'Spidering target {address}')
+            
+            #Prints the progress
+            while int(self.zap.spider.status(scanID)) < 100:
+                print('Spider progress %: {}'.format(self.zap.spider.status(scanID)))
+                time.sleep(1)
+            print('Spider has completed!')
+            # Prints the URLs the spider has crawled
+            print('\n'.join(map(str, self.zap.spider.results(scanID))))
+
     
     def scan_Ports():
         pass
@@ -46,9 +48,12 @@ class Assesment:
     def run_Assesment(self):
         start_timer = time.perf_counter()
 
+        #Connects to API. Connects to 127.0.0.1 on port 8080
+        self.zap = ZAPv2(apikey=self.API_key)
+
         #Loop through address and scan each one and time how long it takes
         for address in self.addresses:
-            self.scan_Website(address)
+            self.active_Scan(address)
             self.address_counter += 1
             
         stop_timer = time.perf_counter()
@@ -74,7 +79,7 @@ def main():
     #Read addresses from file and store as list
     addresses = open('addresses.txt', 'r').read().split('\n')
     
-    test = Assesment(addresses)
+    test = Assesment(addresses, verbose=True)
     test.run_Assesment()
     test.log()
 
