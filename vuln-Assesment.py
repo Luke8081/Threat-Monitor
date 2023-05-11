@@ -1,7 +1,8 @@
 from datetime import datetime
-import time, subprocess, os
+import time
 from pprint import pprint
 from zapv2 import ZAPv2
+import requests, os.path
 
 
 class Assesment:
@@ -24,6 +25,27 @@ class Assesment:
         #Gets all of the sites directories
         self.spider(address)
 
+        #Start the active scan
+        scanID = self.zap.ascan.scan(address)
+
+        if self.verbose:
+            print('Active Scanning target {}'.format(address))
+            while int(self.zap.ascan.status(scanID)) < 100:
+                # Loop until the scanner has finished
+                print('Scan progress %: {}'.format(self.zap.ascan.status(scanID)))
+                time.sleep(2)
+
+            print('Active Scan completed')
+            # Print vulnerabilities found by the scanning
+            print('Hosts: {}'.format(', '.join(self.zap.core.hosts)))
+            print('Alerts: ')
+            print(self.zap.core.alerts(baseurl=address))
+        else:
+            while int(self.zap.ascan.status(scanID)) < 100:
+                time.sleep(2)
+        
+        #Get the report of the scan
+        self.get_Report(address)
 
 
     def spider(self, address):
@@ -40,7 +62,10 @@ class Assesment:
             print('Spider has completed!')
             # Prints the URLs the spider has crawled
             print('\n'.join(map(str, self.zap.spider.results(scanID))))
-
+        else:
+            while int(self.zap.spider.status(scanID)) < 100:
+                time.sleep(2)
+        
     
     def scan_Ports():
         pass
@@ -70,6 +95,35 @@ class Assesment:
         file = open('scan_log.txt', 'a')
         file.write(msg)
         file.close()
+    
+    def get_Report(self, address):
+
+        
+        
+        #Connect to API and download report
+
+        headers = {
+        'Accept': 'application/json',
+        'X-ZAP-API-Key': self.API_key
+        }
+
+        response = requests.get(f"http://127.0.0.1:8080/OTHER/core/other/htmlreport/", params={
+        }, headers = headers)
+
+        if (response.status_code == 200):
+            file = open('TEST.html', 'w')
+            file.write(response.content.decode('utf-8'))
+            file.close()
+            if (self.verbose):
+                print("Created HTML report. File name: ")
+        else:
+            raise Exception("Failed to get report. Couldn't connect to API")
+    
+
+
+        
+
+
         
     
 
@@ -79,7 +133,7 @@ def main():
     #Read addresses from file and store as list
     addresses = open('addresses.txt', 'r').read().split('\n')
     
-    test = Assesment(addresses, verbose=True)
+    test = Assesment(addresses, verbose=False)
     test.run_Assesment()
     test.log()
 
