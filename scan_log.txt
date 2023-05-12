@@ -31,3 +31,13 @@ Scanned 1 addresses in 20.46 seconds. Number of alerts: 1573. Completed on 2023-
 Scanned 1 addresses in 22.07 seconds. Number of alerts: 1573. Completed on 2023-05-11 16:08:45.
 Scanned 1 addresses in 18.13 seconds. Number of alerts: 1573. Completed on 2023-05-11 16:09:34.
 Scanned 1 addresses in 13.67 seconds. Number of alerts: 1573. Completed on 2023-05-11 17:05:28.
+Scanned 1 addresses in 20.04 seconds. Number of alerts: 5. Completed on 2023-05-12 12:06:30.
+Scanned 1 addresses in 15.04 seconds. Number of alerts: 5. Completed on 2023-05-12 15:11:59.
+Scanned 2 addresses in 26.78 seconds. Number of alerts: 8. Completed on 2023-05-12 15:14:51.
+Scanned 3 addresses in 36.82 seconds. Number of alerts: 20. Completed on 2023-05-12 15:18:30.
+Scanned 4 addresses in 181.35 seconds. Number of alerts: 111. Completed on 2023-05-12 15:22:28.
+Scanned 4 addresses in 70.81 seconds. Number of alerts: 134. Completed on 2023-05-12 15:31:00.
+Scanned 4 addresses in 77.71 seconds. Number of alerts: 134. Completed on 2023-05-12 15:34:21.
+Scanned 1 addresses in 36.52 seconds. Number of alerts: 134. Completed on 2023-05-12 15:40:23.
+Scanned 1 addresses in 35.97 seconds. Number of alerts: 134. Completed on 2023-05-12 15:52:28.
+Scanned 1 addresses in 36.67 seconds. Number of alerts: 23. Completed on 2023-05-12 15:57:34.

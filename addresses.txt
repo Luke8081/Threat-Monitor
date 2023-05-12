@@ -1,1 +1,1 @@
-http://public-firing-range.appspot.com/address/location/innerHtml
+http://10.10.231.80/
