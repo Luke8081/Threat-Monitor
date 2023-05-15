@@ -7,10 +7,19 @@ from pprint import pprint
 from zapv2 import ZAPv2
 import requests, os.path, smtplib
 from dotenv import load_dotenv
+import cronitor
 
 #Load enviroment varibles
 load_dotenv()
 
+#Set up cronitor
+cronitor.api_key = os.getenv("CRONITOR_API_KEY")
+cronitor.Monitor.put(
+    key='Website_Scan',
+    type='job',
+    schedule='0 0 * * *',
+    notify='slack:devops-alerts'
+)
 
 class Assesment:
     def __init__(self, addresses, verbose, send_email):
@@ -225,7 +234,7 @@ class Assesment:
         
     
 
-
+@cronitor.job('Website_Scan')
 def main():
     
     #Read addresses from file and store as list
