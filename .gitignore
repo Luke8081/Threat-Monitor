@@ -25,7 +25,7 @@
 *.log
 *.sql
 *.sqlite
-*.env
+.env
 
 # OS generated files #
 ######################

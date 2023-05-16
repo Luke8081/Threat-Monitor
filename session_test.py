@@ -58,7 +58,7 @@ r = requests.get('http://127.0.0.1:8080/JSON/httpSessions/view/activeSession/', 
 }, headers = headers)
 
 print(r.json())
-'''
+
 
 #Delete the active session
 headers = {
@@ -100,4 +100,21 @@ r = requests.get('http://127.0.0.1:8080/OTHER/core/other/htmlreport/', params={
 print(r.status_code)
 
 open('test.html', 'wb').write(r.content)
+'''
+headers = {
+  'Accept': 'application/json',
+  'X-ZAP-API-Key': API
+}
+
+r = requests.get('http://127.0.0.1:8080/JSON/httpSessions/action/shutdown/', params={
+}, headers = headers)
+
+print('Deleted session: ', r.json())
+
+
+
+
+
+
+
 

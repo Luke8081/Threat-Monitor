@@ -1,8 +1,9 @@
 from datetime import datetime
 from urllib.parse import urlparse
+from threading import Thread
 from email.mime.multipart import MIMEMultipart
 from email.mime.text import MIMEText
-import time
+import time, subprocess
 from pprint import pprint
 from zapv2 import ZAPv2
 import requests, os.path, smtplib
@@ -12,13 +13,14 @@ import cronitor
 #Load enviroment varibles
 load_dotenv()
 
-#Set up cronitor
+#Set up cronitor 
 cronitor.api_key = os.getenv("CRONITOR_API_KEY")
 cronitor.Monitor.put(
-    key='Website_Scan',
+    key='vuln-Assesment',
     type='job',
-    schedule='0 0 * * *',
-    notify='slack:devops-alerts'
+    notify=['Luke-8081'],
+    schedule="0 0 * * 1",
+    assertions= ["metric.duration < 10 min"]
 )
 
 class Assesment:
@@ -36,6 +38,31 @@ class Assesment:
         self.alert_count = 0 
         self.high_Risk = False
         self.alarm = False
+        self.zap = None
+
+        #Creats thread to start zap in the background. Needs to be on another thread to run
+        if self.verbose:
+            print("Starting zap server")
+
+        start_thread = Thread(target=Assesment.start_zap, daemon=True)
+        start_thread.start()    
+
+        #Connects to API. Connects to 127.0.0.1 on port 8080
+        count = 0 
+        while self.zap == None:
+            try:
+                self.zap = ZAPv2(apikey=self.API_key)
+                if self.zap:
+                    print("Connected to Zap server")
+            except:
+                if count == 5:
+                    raise Exception("Could not connect to Zap server")
+                count+=1
+                time.sleep(2)
+    
+    def start_zap():
+        #Turn on zap server
+        subprocess.run("/usr/local/bin/zap.sh -daemon -nostdout", shell=True)
         
     
     def active_Scan(self, address):
@@ -94,13 +121,15 @@ class Assesment:
     def run_Assesment(self):
         start_timer = time.perf_counter()
 
-        #Connects to API. Connects to 127.0.0.1 on port 8080
-        self.zap = ZAPv2(apikey=self.API_key)
+
 
         #Loop through address and scan each one and time how long it takes
         for address in self.addresses:
             self.active_Scan(address)
             self.address_counter += 1
+
+        #Shutdown zap server
+        self.zap.core.shutdown()
             
         stop_timer = time.perf_counter()
         self.time = round(stop_timer - start_timer, 2)
@@ -178,7 +207,7 @@ class Assesment:
         self.alert_count = high_Alert + medium_Alert + low_Alert
 
 
-        if bool(medium_Alert) and self.send_email:
+        if bool(high_Alert) and self.send_email:
             self.send_alert_email()
         
         
@@ -240,7 +269,7 @@ def main():
     #Read addresses from file and store as list
     addresses = open('addresses.txt', 'r').read().split('\n')
     
-    test = Assesment(addresses, verbose=True, send_email=True)
+    test = Assesment(addresses, verbose=False, send_email=False)
     test.run_Assesment()
     test.log()
 
