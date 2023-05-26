@@ -6,9 +6,7 @@ const router = express.Router()
 var app = express();
 
 app.get('/', function(req, res) {
-    //res.sendFile(path.join(__dirname + '/templates/home.html'))
-    var test = "This is a test"
-res.render('/templates/home', {test})
+    res.sendFile(path.join(__dirname + '/templates/home.html'))
 });
 
 app.get('/addresses', function(req, res) {
@@ -22,6 +20,6 @@ app.get('/run', function(req, res) {
     //exec("")
 });
 
-app.listen(8081, '127.0.0.1')
+app.listen(8085, '127.0.0.1')
 
-console.log("Waiting on port 8081")
+console.log("Waiting on port 8085")

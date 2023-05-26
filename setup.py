@@ -3,10 +3,10 @@ import os.path, os, time
 
 
 def make_env_file():
-    email = input("Enter email to send alerts to: ")
-    email_pass = input("Enter email password: ")
-    zap_api = input("Enter zap API key: ")
-    cronitor_api = input("Enter cronitor API key: ")
+    zap_api = input("Enter zap API key (required): ")
+    email = input("Enter email to send alerts to (not required): ")
+    email_pass = input("Enter email password (not required): ")
+    cronitor_api = input("Enter cronitor API key (not required): ")
 
 
     file = open('.env', 'w')
@@ -15,6 +15,15 @@ def make_env_file():
     file.write(f"TO_EMAIL={email}\n")
     file.write(f"EMAIL_PASSWD={email_pass}\n")
     file.close()
+
+    print("Created enviroment varibles")
+    print(f"File saved to: {os.getcwd()}/.env")
+
+def install_Zap():
+    print("Downloading Zap and required packages")
+    os.system("apt install default-jre")
+    os.system("apt install snapd -y")
+    os.system("snap install zaproxy --classic")
 
 
 def banner():
@@ -26,12 +35,20 @@ def install_req():
     os.system("pip install -r requirements.txt")
 
 if __name__ == "__main__":
-    #Check if file exists if not set it up
+    #Checks the user is root. If they are asks if they want to download the zap server
+    if os.geteuid()==0:
+        print("Would you like to install Zap server and required packages(y/n)?")
+        if input() == "y":
+            install_Zap()
+    else:
+        print("WARNING: This file must be run as root to install Zap")
+
+    #Check if enviroment file exists if not set it up
     if os.path.isfile(".env") == False:
         make_env_file()
-        print("Created enviroment varibles")
     
-    print("Would you like to install required packages(y/n):")
+    #Install all required python packages
+    print("Would you like to install required python packages(y/n)?")
     if input() == "y":
         install_req()
     

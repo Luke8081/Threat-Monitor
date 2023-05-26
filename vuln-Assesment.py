@@ -13,18 +13,8 @@ import cronitor
 #Load enviroment varibles
 load_dotenv()
 
-#Set up cronitor 
-cronitor.api_key = os.getenv("CRONITOR_API_KEY")
-cronitor.Monitor.put(
-    key='vuln-Assesment',
-    type='job',
-    notify=['Luke-8081'],
-    schedule="0 0 * * 1",
-    assertions= ["metric.duration < 10 min"]
-)
-
 class Assesment:
-    def __init__(self, addresses, verbose, send_email):
+    def __init__(self, addresses, verbose, send_email, debug):
 
         self.API_key = os.getenv("API_KEY")
         self.email_passwd = os.getenv("EMAIL_PASSWD")
@@ -36,18 +26,40 @@ class Assesment:
         self.date_time = datetime.today().strftime('%Y-%m-%d %H:%M:%S')
         self.address_counter = 0
         self.alert_count = 0 
+        self.debug = debug
         self.high_Risk = False
         self.alarm = False
         self.zap = None
 
-        #Creats thread to start zap in the background. Needs to be on another thread to run
+        #Debug mode is very verbose
+        if self.debug:
+            self.verbose = True
+
+        #Creates thread to start zap in the background. Needs to be on another thread to run
         if self.verbose:
             print("Starting zap server")
 
-        start_thread = Thread(target=Assesment.start_zap, daemon=True)
+        start_thread = Thread(target=self.start_zap, daemon=True)
         start_thread.start()    
 
+        conection = True
+        count = 0
+        while conection:
+            try:
+                response = requests.get("http://127.0.0.1:8080/")
+                conection = False
+            except Exception as e:
+                time.sleep(1)
+                count += 1
+                if self.verbose:
+                    print('Waiting for Zap server')
+                if count == 30:
+                    raise Exception(e)
+                
+
         #Connects to API. Connects to 127.0.0.1 on port 8080
+        if self.verbose:
+            print("Zap server is online")
         count = 0 
         while self.zap == None:
             try:
@@ -59,10 +71,14 @@ class Assesment:
                     raise Exception("Could not connect to Zap server")
                 count+=1
                 time.sleep(2)
-    
-    def start_zap():
-        #Turn on zap server
-        subprocess.run("/usr/local/bin/zap.sh -daemon -nostdout", shell=True)
+
+    def start_zap(self):
+        #Start zap server
+        if self.debug:
+            cmd = f"/usr/local/bin/zap.sh -daemon -config api.key={self.API_key}"
+        else:
+            cmd = f"/usr/local/bin/zap.sh -daemon -nostdout -config api.key={self.API_key}"
+        subprocess.run(cmd, shell=True)
         
     
     def active_Scan(self, address):
@@ -80,7 +96,7 @@ class Assesment:
             print('Active Scanning target {}'.format(address))
             while int(self.zap.ascan.status(scanID)) < 100:
                 # Loop until the scanner has finished
-                print('Scan progress %: {}'.format(self.zap.ascan.status(scanID)))
+                print('Scan progress : {}%'.format(self.zap.ascan.status(scanID)))
                 time.sleep(2)
 
             print('Active Scan completed')
@@ -254,22 +270,23 @@ class Assesment:
         s.sendmail("zap.warning.alert@gmail.com", os.getenv("TO_EMAIL"), email_string)
         s.quit()
 
-    
+#Set up cronitor. If you don't want to use cronitor delete the cronitor code
+# and the decoration arounf the main function.
+cronitor.api_key = os.getenv("CRONITOR_API_KEY")
+cronitor.Monitor.put(
+    key='vuln-Assesment',
+    type='job',
+    notify=['Luke-8081'],
+    schedule="0 0 * * 1",
+    assertions= ["metric.duration < 10 min"]
+)
 
-
-        
-
-
-        
-    
-
-@cronitor.job('Website_Scan')
+@cronitor.Monitor("vuln-Assesment")
 def main():
     
     #Read addresses from file and store as list
     addresses = open('addresses.txt', 'r').read().split('\n')
-    
-    test = Assesment(addresses, verbose=False, send_email=False)
+    test = Assesment(addresses, verbose=True, send_email=False, debug=False)
     test.run_Assesment()
     test.log()
 
