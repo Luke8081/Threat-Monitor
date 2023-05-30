@@ -271,7 +271,7 @@ class Assesment:
         s.quit()
 
 #Set up cronitor. If you don't want to use cronitor delete the cronitor code
-# and the decoration arounf the main function.
+# and the decoration around the main function.
 cronitor.api_key = os.getenv("CRONITOR_API_KEY")
 cronitor.Monitor.put(
     key='vuln-Assesment',
@@ -281,11 +281,12 @@ cronitor.Monitor.put(
     assertions= ["metric.duration < 10 min"]
 )
 
-@cronitor.Monitor("vuln-Assesment")
+@cronitor.job("vuln-Assesment")
 def main():
+    print(os.getcwd())
     
     #Read addresses from file and store as list
-    addresses = open('addresses.txt', 'r').read().split('\n')
+    addresses = open(f'{os.getcwd()}/addresses.txt', 'r').read().split('\n')
     test = Assesment(addresses, verbose=True, send_email=False, debug=False)
     test.run_Assesment()
     test.log()
