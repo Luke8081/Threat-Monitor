@@ -34,27 +34,28 @@ class Assesment:
         #Debug mode is very verbose
         if self.debug:
             self.verbose = True
+        
+
+        #Test to see if zap server is already running
+        #If it is shut it down
+        zap_proxy_state = Assesment.test_Zap(debug=False, test_once=True)
+        if zap_proxy_state:
+            self.zap.core.shutdown()
+        if zap_proxy_state and self.verbose:
+            print("Zap server already online. Shutting down")
 
         #Creates thread to start zap in the background. Needs to be on another thread to run
         if self.verbose:
             print("Starting zap server")
 
         start_thread = Thread(target=self.start_zap, daemon=True)
-        start_thread.start()    
+        start_thread.start()
 
-        conection = True
-        count = 0
-        while conection:
-            try:
-                response = requests.get("http://127.0.0.1:8080/")
-                conection = False
-            except Exception as e:
-                time.sleep(1)
-                count += 1
-                if self.verbose:
-                    print('Waiting for Zap server')
-                if count == 30:
-                    raise Exception(e)
+        if self.verbose:
+            print('Waiting for Zap server...')
+
+        Assesment.test_Zap(debug=self.debug, test_once=False)
+
                 
 
         #Connects to API. Connects to 127.0.0.1 on port 8080
@@ -79,7 +80,25 @@ class Assesment:
         else:
             cmd = f"/usr/local/bin/zap.sh -daemon -nostdout -config api.key={self.API_key}"
         subprocess.run(cmd, shell=True)
-        
+    
+    def test_Zap(debug=False, test_once=False):
+        conection = True
+        count = 0
+        time.sleep(10)
+        while conection:
+            try:
+                response = requests.get("http://127.0.0.1:8080/")
+                conection = False
+                if debug:
+                    print("Waiting...")
+                return True
+            except Exception as e:
+                time.sleep(1)
+                count += 1
+                if test_once:
+                    return False
+                if count == 30:
+                    raise Exception("Zap server did not start")
     
     def active_Scan(self, address):
 
@@ -136,8 +155,6 @@ class Assesment:
     
     def run_Assesment(self):
         start_timer = time.perf_counter()
-
-
 
         #Loop through address and scan each one and time how long it takes
         for address in self.addresses:
@@ -276,7 +293,6 @@ cronitor.api_key = os.getenv("CRONITOR_API_KEY")
 cronitor.Monitor.put(
     key='vuln-Assesment',
     type='job',
-    notify=['Luke-8081'],
     schedule="0 0 * * 1",
     assertions= ["metric.duration < 10 min"]
 )
