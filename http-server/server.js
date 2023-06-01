@@ -16,7 +16,9 @@ app.get('/addresses', function(req, res) {
 
 app.get('/run', function(req, res) {
     console.log('Run button clicked')
-    const to_run = "python3 " + process.cwd().replace("http-server", "vuln-Assesment.py")
+    //Change out of current working directory. This is so the program can find files needed
+    process.chdir('../')
+    const to_run = "python3 " + process.cwd() + "/vuln-Assesment.py"
     console.log(to_run)
     exec(to_run, (err, output) => {
         if (err){
@@ -24,6 +26,7 @@ app.get('/run', function(req, res) {
         }
         console.log(output)
     })
+    res.redirect('/')
 });
 
 app.listen(8085, '127.0.0.1')
