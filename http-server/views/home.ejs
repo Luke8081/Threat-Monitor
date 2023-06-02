@@ -1,0 +1,136 @@
+<!DOCTYPE html>
+<style>
+    #topnav {
+   width: 100%;
+
+   position: fixed;
+   top: 0;
+   left: 0;
+
+   background-color: Black;
+
+   font-family: Arial, sans-serif;
+   font-size: 15px;
+}
+
+.nav-link {
+   display: inline-block;
+   width: 100px;
+   height: 55px;
+
+   color: White;
+
+   text-align: center;
+   line-height: 55px;
+
+   text-decoration: none;
+}
+
+#logo {
+    width: 16%;
+   background-color: RoyalBlue;
+   font-weight: bold;
+   font-size: 20px;
+}
+
+#link{
+    font-size: 18px;
+}
+
+#scan {
+   position: absolute;
+   top: 0;
+   right: 0;
+   width: 10%;
+   background-color: green;
+   font-size: 20px;
+}
+img {
+   display: block;
+   margin-top: 8%;
+   max-width: 100%;
+   height: auto;
+   width: auto\9; 
+   margin-left: auto;
+   margin-right: auto;
+}
+.info_display, .blink{
+   margin: 7%;
+   margin-left: 4%;
+   padding: 2%;
+   width: 20%;
+   height: 10%;
+   background-color: black;
+   color: whitesmoke;
+   border-radius: 15px;
+   vertical-align: top;
+   
+}
+
+body{
+   background-color: gray;
+}
+@keyframes blinking {
+   0% {
+      background-color: black;
+      border: 3px solid #666;
+   }
+   100% {
+      background-color: red;
+      border: 3px solid #666;
+   }
+}
+.blink {
+        animation: blinking 1s infinite;
+      }
+
+</style>
+<html>
+   <head>
+      <meta charset="utf-8">
+      <title>Scanner Dashboard</title>
+   </head>
+   <body>
+      <nav id="topnav">
+         <a id="logo" class="nav-link" href="#">Scanner Dashboard</a>
+         <a id="link" class="nav-link" href="#">View reports</a>
+         <a id="link" class="nav-link" href="/addresses">Addresses</a>
+
+         <a id="scan" class="nav-link" href="/run">Scan Now</a>
+      </nav>
+   </body>
+
+<body>
+   <div>
+      <img id="status" src="" width="350" height="100">
+   </div>
+   <div class="info_display">
+      <h1>Alert count: <%= alert_count %></h1>
+   </div>
+</body>
+
+<script>
+   //Updates image every 10 seconds. Needs to be random element to stop browser reusing image in cache
+   const url = "https://cronitor.io/badges/uKVpG4/production/iVvSLth_Vq5UwQMd0yDkm40Ivjg.svg"
+   var image = document.getElementById("status")
+   image.src = url
+
+   setInterval(function(){
+      var image = document.getElementById("status")
+      image.src = url + "?rand=" + Math.random()
+   }, 7000)
+   //Alerts the user if there is a high risk. 
+   if ('<%= alert_count %>' > 3){
+      alert('ACTION NEEDED. Web server with high risk vulnerability found.')
+      stylesheet = document.styleSheets[0]
+      stylesheet.insertRule('.info_display {animation: blinking 1s infinite;}', 0)
+   } else{
+      element = document.getElementsByClassName('info_display')
+      element[0].style.backgroundColor = 'green'
+   }
+</script>
+
+
+</html>
+
+

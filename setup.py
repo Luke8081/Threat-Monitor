@@ -1,9 +1,9 @@
-import os.path, os, time
+import os.path, os, time, random, string
 #Run this file to set up application 
 
 
 def make_env_file():
-    zap_api = input("Enter zap API key (required): ")
+    zap_api = ''.join(random.choices(string.ascii_lowercase + string.digits, k=25))
     email = input("Enter email to send alerts to (not required): ")
     email_pass = input("Enter email password (not required): ")
     cronitor_api = input("Enter cronitor API key (not required): ")
@@ -33,6 +33,8 @@ def banner():
 def install_req():
     #Download the requirements 
     os.system("pip install -r requirements.txt")
+
+
 
 if __name__ == "__main__":
     #Checks the user is root. If they are asks if they want to download the zap server

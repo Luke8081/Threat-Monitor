@@ -8,7 +8,7 @@ from pprint import pprint
 from zapv2 import ZAPv2
 import requests, os.path, smtplib
 from dotenv import load_dotenv
-import cronitor
+import cronitor, json
 
 #Load enviroment varibles
 load_dotenv()
@@ -37,12 +37,22 @@ class Assesment:
         
 
         #Test to see if zap server is already running
-        #If it is shut it down
-        zap_proxy_state = Assesment.test_Zap(debug=False, test_once=True)
-        if zap_proxy_state:
-            self.zap.core.shutdown()
+        #If it is shut it down. There could ne multiple zap servers running.
+        #They all need to be shut down to make sure port 8080 is open
+        zap_proxy_state = Assesment.test_Zap(debug=self.debug, test_once=True)
+        while zap_proxy_state:
+            headers = {
+            'Accept': 'application/json',
+            'X-ZAP-API-Key': self.API_key,
+            }
+            response = requests.get("http://127.0.0.1:8080/JSON/core/action/shutdown/", params={}, headers=headers)
+            if response.json()['Result'] != "OK":
+                raise Exception("Failed to shutdown Zap server.", response.json())
+            time.sleep(5)
+            zap_proxy_state = Assesment.test_Zap(debug=self.debug, test_once=True)
+
         if zap_proxy_state and self.verbose:
-            print("Zap server already online. Shutting down")
+            print("Zap server already online. Shutting server down")
 
         #Creates thread to start zap in the background. Needs to be on another thread to run
         if self.verbose:
@@ -84,7 +94,6 @@ class Assesment:
     def test_Zap(debug=False, test_once=False):
         conection = True
         count = 0
-        time.sleep(10)
         while conection:
             try:
                 response = requests.get("http://127.0.0.1:8080/")
@@ -97,7 +106,7 @@ class Assesment:
                 count += 1
                 if test_once:
                     return False
-                if count == 30:
+                if count ==40:
                     raise Exception("Zap server did not start")
     
     def active_Scan(self, address):
@@ -175,8 +184,8 @@ class Assesment:
         
         msg = f"\nScanned {self.address_counter} addresses in {self.time} seconds. Number of alerts: {self.alert_count}. Completed on {self.date_time}."
 
-        if self.high_Risk:
-            msg = msg + " - ACTION NEEDED"
+        if self.medium_Alert:
+            msg = msg + " - ACTION NEEDED."
 
         print(msg)
 
@@ -191,12 +200,14 @@ class Assesment:
         #Get the domain name
         dir_name = urlparse(address).netloc
         dir_name = os.getcwd() + "/reports/" + dir_name
+        dir_JSON = dir_name + "/JSON"
         #Checks if the directory exist. If not it creates it
         dir_exist = os.path.isdir(dir_name)
         if dir_exist == False:
             os.mkdir(dir_name)
+            os.mkdir(dir_JSON)
         
-        #Connect to API and download report
+        #Connect to API and download html report
 
         headers = {
         'Accept': 'application/json',
@@ -216,6 +227,27 @@ class Assesment:
                 print("\nCreated HTML report. Directory: ", dir_name)
         else:
             raise Exception("Failed to get report. Couldn't connect to API")
+
+        #Connect to API and download JSON report
+
+        headers = {
+        'Accept': 'application/json',
+        'X-ZAP-API-Key': self.API_key,
+        'sites': address
+        }
+
+        response = requests.get(f"http://127.0.0.1:8080/OTHER/core/other/jsonreport/", params={
+        }, headers = headers)
+
+        if (response.status_code == 200):
+            self.file_name = f"{dir_JSON}/{self.date}.json"
+            file = open(self.file_name, 'w')
+            file.write(json.dumps(response.content.decode('utf-8')))
+            file.close()
+            if (self.verbose):
+                print("\nCreated JSON report. Directory: ", dir_JSON)
+        else:
+            raise Exception("Failed to get report. Couldn't connect to API")
     
     def get_Alerts(self):
 
@@ -229,18 +261,18 @@ class Assesment:
             json_response = resp.json()
             resp = json_response["alertsSummary"]
 
-            high_Alert = resp.get("High")
-            medium_Alert = resp.get("Medium")
-            low_Alert = resp.get("Low")
+            self.high_Alert = resp.get("High")
+            self.medium_Alert = resp.get("Medium")
+            self.low_Alert = resp.get("Low")
         else:
             raise Exception(f'Failed to get the summary. {str(resp.status_code)}')
         
 
         #Add alert count to the total
-        self.alert_count = high_Alert + medium_Alert + low_Alert
+        self.alert_count = self.high_Alert + self.medium_Alert + self.low_Alert
 
 
-        if bool(high_Alert) and self.send_email:
+        if bool(self.high_Alert) and self.send_email:
             self.send_alert_email()
         
         
@@ -299,9 +331,8 @@ cronitor.Monitor.put(
 
 @cronitor.job("vuln-Assesment")
 def main():
-    print(os.getcwd())
-    
     #Read addresses from file and store as list
+    #raise Exception("This is a test")
     addresses = open(f'{os.getcwd()}/addresses.txt', 'r').read().split('\n')
     test = Assesment(addresses, verbose=True, send_email=False, debug=False)
     test.run_Assesment()
