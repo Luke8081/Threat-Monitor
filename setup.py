@@ -25,6 +25,23 @@ def install_Zap():
     os.system("apt install snapd -y")
     os.system("snap install zaproxy --classic")
 
+def set_database():
+    import sqlite3
+
+    #Creates database file if one does not exist
+    if os.path.isfile("reports/database.db") == False:
+        os.system("touch reports/database.db")
+    
+    #Connect to database and create a table.
+    conn = sqlite3.connect("reports/database.db")
+    conn.execute('''CREATE TABLE IF NOT EXISTS alert_Summary
+            (Address         TEXT    NOT NULL,
+            Low_Alert       INT     NOT NULL,
+            Medium_Alert    INT     NOT NULL,
+            High_Alert      INT     NOT NULL);''')
+    conn.close()
+    
+
 
 def banner():
     print(text2art("Automated\n Vulnerabillity\n Scanner"))
@@ -43,11 +60,14 @@ if __name__ == "__main__":
         if input() == "y":
             install_Zap()
     else:
-        print("WARNING: This file must be run as root to install Zap")
+        print("WARNING: This file must be run as root to install Zap and required packages")
 
     #Check if enviroment file exists if not set it up
     if os.path.isfile(".env") == False:
         make_env_file()
+    
+    #Set up database
+    set_database()
     
     #Install all required python packages
     print("Would you like to install required python packages(y/n)?")

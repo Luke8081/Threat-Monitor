@@ -8,7 +8,9 @@ from pprint import pprint
 from zapv2 import ZAPv2
 import requests, os.path, smtplib
 from dotenv import load_dotenv
-import cronitor, json
+import cronitor, json, sqlite3
+
+
 
 #Load enviroment varibles
 load_dotenv()
@@ -30,6 +32,7 @@ class Assesment:
         self.high_Risk = False
         self.alarm = False
         self.zap = None
+        self.conn = sqlite3.connect("reports/database.db")
 
         #Debug mode is very verbose
         if self.debug:
@@ -126,15 +129,17 @@ class Assesment:
                 # Loop until the scanner has finished
                 print('Scan progress : {}%'.format(self.zap.ascan.status(scanID)))
                 time.sleep(2)
-
             print('Active Scan completed')
+        else:
+            while int(self.zap.ascan.status(scanID)) < 100:
+                time.sleep(2)
+        
+        
+        if self.debug:
             # Print vulnerabilities found by the scanning
             pprint('Hosts: {}'.format(', '.join(self.zap.core.hosts)))
             print('Alerts: ')
             pprint(self.zap.core.alerts(baseurl=address))
-        else:
-            while int(self.zap.ascan.status(scanID)) < 100:
-                time.sleep(2)
         
         #Get a report of the scan
         self.get_Report(address)
@@ -157,16 +162,20 @@ class Assesment:
                 time.sleep(1)
             print('Spider has completed!')
             # Prints the URLs the spider has crawled
-            print('\n'.join(map(str, self.zap.spider.results(scanID))))
         else:
             while int(self.zap.spider.status(scanID)) < 100:
                 time.sleep(2)
+
+        if self.debug:
+            print('\n'.join(map(str, self.zap.spider.results(scanID))))
     
     def run_Assesment(self):
         start_timer = time.perf_counter()
 
         #Loop through address and scan each one and time how long it takes
         for address in self.addresses:
+            if address == "":
+                raise Exception('Make sure there are no extra lines in addresses file')
             self.active_Scan(address)
             self.address_counter += 1
 
@@ -224,7 +233,7 @@ class Assesment:
             file.write(response.content.decode('utf-8'))
             file.close()
             if (self.verbose):
-                print("\nCreated HTML report. Directory: ", dir_name)
+                print("\nCreated HTML report. Directory: ", self.file_name)
         else:
             raise Exception("Failed to get report. Couldn't connect to API")
 
@@ -241,15 +250,21 @@ class Assesment:
 
         if (response.status_code == 200):
             self.file_name = f"{dir_JSON}/{self.date}.json"
-            file = open(self.file_name, 'w')
-            file.write(json.dumps(response.content.decode('utf-8')))
-            file.close()
+            with open(self.file_name, 'w') as file:
+                json.dump(response.json(), file)
+
             if (self.verbose):
-                print("\nCreated JSON report. Directory: ", dir_JSON)
+                print("\nCreated JSON report. Directory: ", self.file_name)
         else:
             raise Exception("Failed to get report. Couldn't connect to API")
     
     def get_Alerts(self):
+
+        #Set up connection to the data base
+        cursor = self.conn.cursor()
+
+        
+
 
         #Get the a summary of the zap scan.
         params = {'apikey': self.API_key}
