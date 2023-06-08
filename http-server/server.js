@@ -3,10 +3,13 @@ var fs = require('fs');
 const path = require('path')
 const router = express.Router()
 const { exec } = require('node:child_process')
+const sqlite = require('sqlite3').verbose()
 
 var app = express();
 
 app.set('view engine', 'ejs')
+
+var database_alerts = {}
 
 function check_DIR(){
     //Change out of current working directory. This is so the program can find files needed
@@ -26,6 +29,32 @@ function read_Log(){
         }
     }
     return alert_count
+}
+
+function get_alerts(){
+    check_DIR()
+    //Connect to database
+    let db = new sqlite.Database(process.cwd() + '/reports/database.db', sqlite.OPEN_READONLY, (err) => {
+        if (err){
+            console.error(err.message)
+        }
+    })
+    db.serialize(() => {
+        db.each('SELECT SUM(Low_Alert), SUM(Medium_Alert), SUM(High_Alert) FROM alert_summary', (err, row) => {
+            if (err){
+                console.error(err.message)
+            }
+            console.log(row.Low_Alert)
+            database_alerts.Low_Alert = row.Low_Alert
+            database_alerts.Medium_Alert = row.Medium_Alert
+            database_alerts.High_Alert = row.High_Alert
+        })
+    })
+    console.log(database_alerts.Low_Alert)
+
+    db.close()
+
+    
 }
 
 app.get('/', function(req, res) {
@@ -58,3 +87,5 @@ app.get('/run', function(req, res) {
 app.listen(8085, '127.0.0.1')
 
 console.log("Waiting on port 8085")
+
+get_alerts()

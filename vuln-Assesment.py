@@ -144,7 +144,7 @@ class Assesment:
         #Get a report of the scan
         self.get_Report(address)
         #Get any alerts 
-        self.get_Alerts()
+        self.get_Alerts(address)
         
 
 
@@ -258,13 +258,9 @@ class Assesment:
         else:
             raise Exception("Failed to get report. Couldn't connect to API")
     
-    def get_Alerts(self):
-
-        #Set up connection to the data base
-        cursor = self.conn.cursor()
-
+    def get_Alerts(self, address_full):
         
-
+        address = urlparse(address_full).netloc
 
         #Get the a summary of the zap scan.
         params = {'apikey': self.API_key}
@@ -286,11 +282,39 @@ class Assesment:
         #Add alert count to the total
         self.alert_count = self.high_Alert + self.medium_Alert + self.low_Alert
 
+        #Store the results in the database
+        self.insert_or_update_scan(address)
+
 
         if bool(self.high_Alert) and self.send_email:
             self.send_alert_email()
         
-        
+    def insert_or_update_scan(self, address):
+        #Set up connection to the data base
+        cursor = self.conn.cursor()
+
+        params = (address, self.low_Alert, self.medium_Alert, self.high_Alert)
+
+        #Store the reults to the database. If the address already exists then update the results
+        cursor.execute('SELECT Address FROM alert_Summary WHERE Address = ?', (address,))
+        exists_row = cursor.fetchone()
+
+        if exists_row is None:
+            sql = f'''INSERT INTO alert_Summary('Address','Low_Alert', 'Medium_Alert', 'High_Alert')
+            VALUES(?,?,?,?)'''
+        else:
+            sql = '''UPDATE alert_Summary SET Address = ?, Low_Alert = ?, Medium_Alert = ?, High_Alert = ? '''
+
+        if self.debug:
+            print('Writing results to database...')
+
+        cursor.execute(sql, params)
+
+        self.conn.commit()
+        self.conn.close()
+
+        if self.debug:
+            print('Results successfully stored to database')
            
 
         
