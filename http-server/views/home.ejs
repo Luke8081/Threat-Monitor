@@ -54,18 +54,23 @@ img {
    margin-left: auto;
    margin-right: auto;
 }
-.info_display, .blink{
+.info_display, .blink, .high_info_display, .medium_info_display, .low_info_display{
+   text-align: center;
    margin: 7%;
-   margin-left: 4%;
-   padding: 2%;
-   width: 20%;
+   margin-left: 7.5%;
+   padding: 1%;
+   width: 16%;
    height: 10%;
    background-color: black;
    color: whitesmoke;
    border-radius: 15px;
    vertical-align: top;
+   display: inline-block;
    
 }
+
+
+
 
 body{
    background-color: gray;
@@ -90,25 +95,30 @@ body{
       <meta charset="utf-8">
       <title>Scanner Dashboard</title>
    </head>
-   <body>
-      <nav id="topnav">
-         <a id="logo" class="nav-link" href="#">Scanner Dashboard</a>
-         <a id="link" class="nav-link" href="#">View reports</a>
-         <a id="link" class="nav-link" href="/addresses">Addresses</a>
 
-         <a id="scan" class="nav-link" href="/run">Scan Now</a>
-      </nav>
-   </body>
+<%- include ('./partials/nav'); %>
 
 <body>
+   <span style="font-size: 3em; color: Tomato;">
+      <i class="fa-regular fa-crosshairs fa-2xl"></i>
+   </span>
    <div>
       <img id="status" src="" width="350" height="100">
    </div>
-   <div class="info_display">
-      <h1>Alert count: <%= alert_count %></h1>
+   <div>
+      <div class="high_info_display">
+         <h1>High alert: <%= alerts.High_Alert %></h1>
+      </div>
+      <div class="medium_info_display">
+         <h1>Medium alert: <%= alerts.Medium_Alert %></h1>
+      </div>
+      <div class="low_info_display">
+         <h1>Low alert: <%= alerts.Low_Alert %></h1>
+      </div>
    </div>
 </body>
 
+<script src="https://kit.fontawesome.com/449adc21a1.js" crossorigin="anonymous"></script>
 <script>
    //Updates image every 10 seconds. Needs to be random element to stop browser reusing image in cache
    const url = "https://cronitor.io/badges/uKVpG4/production/iVvSLth_Vq5UwQMd0yDkm40Ivjg.svg"
@@ -119,14 +129,35 @@ body{
       var image = document.getElementById("status")
       image.src = url + "?rand=" + Math.random()
    }, 7000)
+
    //Alerts the user if there is a high risk. 
-   if ('<%= alert_count %>' > 3){
+   if ('<%= alerts.High_Alert %>' > 0){
       alert('ACTION NEEDED. Web server with high risk vulnerability found.')
       stylesheet = document.styleSheets[0]
-      stylesheet.insertRule('.info_display {animation: blinking 1s infinite;}', 0)
+      stylesheet.insertRule('.high_info_display {animation: blinking 1s infinite;}', 0)
    } else{
-      element = document.getElementsByClassName('info_display')
-      element[0].style.backgroundColor = 'green'
+      element = document.getElementsByClassName('high_info_display')
+      element[0].style.backgroundColor = 'darkgreen'
+   }
+
+   //Alerts the user when there is a medium risk
+   if ('<%= alerts.Medium_Alert %>' > 10){
+      stylesheet = document.styleSheets[0]
+      stylesheet.insertRule('.medium_info_display {animation: blinking 1s infinite;}', 0)
+   }else if ('<%= alerts.Medium_Alert %>' > 1){
+      element = document.getElementsByClassName('medium_info_display')
+      element[0].style.backgroundColor = 'orange'
+   }else{
+      element = document.getElementsByClassName('medium_info_display')
+      element[0].style.backgroundColor = 'darkgreen'
+   }
+
+   if ('<%= alerts.Low_Alert %>' > 20){
+      element = document.getElementsByClassName('low_info_display')
+      element[0].style.backgroundColor = 'orange'
+   } else{
+      element = document.getElementsByClassName('low_info_display')
+      element[0].style.backgroundColor = 'darkgreen'
    }
 </script>
 

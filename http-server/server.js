@@ -4,12 +4,12 @@ const path = require('path')
 const router = express.Router()
 const { exec } = require('node:child_process')
 const sqlite = require('sqlite3').verbose()
+var partials = require('express-partials')
 
 var app = express();
 
 app.set('view engine', 'ejs')
-
-var database_alerts = {}
+app.use(partials())
 
 function check_DIR(){
     //Change out of current working directory. This is so the program can find files needed
@@ -19,19 +19,8 @@ function check_DIR(){
     }
 }
 
-function read_Log(){
-    const data = fs.readFileSync("scan_log.txt", 'utf8');
-    const array = data.split('.')
-    var alert_count = 0
-    for (var i = 0; i < array.length; i++){
-        if (array[i] === " - ACTION NEEDED"){
-            alert_count ++
-        }
-    }
-    return alert_count
-}
-
-function get_alerts(){
+//Async function where you can parse a SQL query
+async function db_all(query){
     check_DIR()
     //Connect to database
     let db = new sqlite.Database(process.cwd() + '/reports/database.db', sqlite.OPEN_READONLY, (err) => {
@@ -39,31 +28,33 @@ function get_alerts(){
             console.error(err.message)
         }
     })
-    db.serialize(() => {
-        db.each('SELECT SUM(Low_Alert), SUM(Medium_Alert), SUM(High_Alert) FROM alert_summary', (err, row) => {
-            if (err){
-                console.error(err.message)
-            }
-            console.log(row.Low_Alert)
-            database_alerts.Low_Alert = row.Low_Alert
-            database_alerts.Medium_Alert = row.Medium_Alert
-            database_alerts.High_Alert = row.High_Alert
-        })
-    })
-    console.log(database_alerts.Low_Alert)
-
-    db.close()
-
-    
+    return new Promise(function(resolve,reject){
+        db.all(query, function(err,rows){
+           if(err){return reject(err);}
+           resolve(rows);
+         });
+        db.close()
+    });
 }
 
-app.get('/', function(req, res) {
+//Gets the sum of alerts for all the websites scanned
+async function get_alerts(){
+    let database = await db_all('SELECT SUM(Low_Alert) AS Low_Alert, SUM(Medium_Alert) AS Medium_Alert, SUM(High_Alert) AS High_Alert FROM alert_summary')
+    return{
+        Low_Alert: database[0].Low_Alert,
+        Medium_Alert: database[0].Medium_Alert,
+        High_Alert: database[0].High_Alert
+    }
+}
+
+app.get('/', async function(req, res) {
     check_DIR()
-    alert_count = read_Log()
 
     var API_key = process.env.CRONITOR_API_KEY
+    const alerts = await get_alerts()
+    console.log(alerts)
 
-    res.render("home", {alert_count: alert_count})
+    res.render("home", {alerts: alerts})
 });
 
 app.get('/addresses', function(req, res) {
@@ -87,5 +78,3 @@ app.get('/run', function(req, res) {
 app.listen(8085, '127.0.0.1')
 
 console.log("Waiting on port 8085")
-
-get_alerts()
