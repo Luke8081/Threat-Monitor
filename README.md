@@ -15,4 +15,7 @@ I understand the pain of rummaging through folders for scan reports. That's why 
 
 My project comes with a visually appealing web interface. Interact with the program and gain valuable insights into your application's security status. With a few clicks, you can dive deep into scan results, identify vulnerabilities, and take swift actions to fortify your system against potential risks.
 
-Join me on this journey towards enhanced application security. Experience the convenience of an automated vulnerability scanner, tailored for your needs. With my project, Zap integration, simplified report management, and a user-friendly web interface are at your fingertips. Let's fortify your defenses together!
+🚨 Automatic Alerts for Swift Action
+
+Stay one step ahead with automatic vulnerability alerts! My project notifies you immediately upon the discovery of any security vulnerabilities. Be promptly informed, so you can take swift actions to remediate and patch potential risks, keeping your applications secure at all times.
+
