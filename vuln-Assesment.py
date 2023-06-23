@@ -217,7 +217,6 @@ class Assesment:
             os.mkdir(dir_JSON)
         
         #Connect to API and download html report
-
         headers = {
         'Accept': 'application/json',
         'X-ZAP-API-Key': self.API_key,
@@ -293,17 +292,17 @@ class Assesment:
         #Set up connection to the data base
         cursor = self.conn.cursor()
 
-        params = (address, self.low_Alert, self.medium_Alert, self.high_Alert)
+        params = (address, self.low_Alert, self.medium_Alert, self.high_Alert, self.date)
 
         #Store the reults to the database. If the address already exists then update the results
         cursor.execute('SELECT Address FROM alert_Summary WHERE Address = ?', (address,))
         exists_row = cursor.fetchone()
 
         if exists_row is None:
-            sql = f'''INSERT INTO alert_Summary('Address','Low_Alert', 'Medium_Alert', 'High_Alert')
-            VALUES(?,?,?,?)'''
+            sql = f'''INSERT INTO alert_Summary('Address','Low_Alert', 'Medium_Alert', 'High_Alert', 'Date')
+            VALUES(?,?,?,?,?)'''
         else:
-            sql = '''UPDATE alert_Summary SET Address = ?, Low_Alert = ?, Medium_Alert = ?, High_Alert = ? '''
+            sql = '''UPDATE alert_Summary SET Address = ?, Low_Alert = ?, Medium_Alert = ?, High_Alert = ?, Date = ?'''
 
         if self.debug:
             print('Writing results to database...')

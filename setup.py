@@ -38,10 +38,12 @@ def set_database():
             (Address         TEXT    NOT NULL,
             Low_Alert       INT     NOT NULL,
             Medium_Alert    INT     NOT NULL,
-            High_Alert      INT     NOT NULL);''')
+            High_Alert      INT     NOT NULL,
+            Date            DATE    NOT NULL);''')
     conn.close()
     
-
+set_database()
+exit()
 
 def banner():
     print(text2art("Automated\n Vulnerabillity\n Scanner"))

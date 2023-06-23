@@ -9,7 +9,8 @@ var partials = require('express-partials')
 var app = express();
 
 app.set('view engine', 'ejs')
-app.use(partials())
+//app.use(partials())
+app.use(express.static(__dirname + '/views'));
 
 function check_DIR(){
     //Change out of current working directory. This is so the program can find files needed
@@ -47,6 +48,13 @@ async function get_alerts(){
     }
 }
 
+async function get_scanned_addresses(){
+    let sql = "SELECT Address FROM alert_Summary"
+    let addresses = await db_all(sql)
+    addresses = addresses[0].Address
+    return addresses
+}
+
 app.get('/', async function(req, res) {
     check_DIR()
 
@@ -57,8 +65,11 @@ app.get('/', async function(req, res) {
     res.render("home", {alerts: alerts})
 });
 
-app.get('/addresses', function(req, res) {
+app.get('/addresses', async function(req, res) {
     console.log("Load addresses")
+    res.render('addresses')
+    let addresses = await get_scanned_addresses()
+    console.log(addresses)
 });
 
 app.get('/run', function(req, res) {
@@ -74,6 +85,7 @@ app.get('/run', function(req, res) {
     })
     res.redirect('/')
 });
+
 
 app.listen(8085, '127.0.0.1')
 

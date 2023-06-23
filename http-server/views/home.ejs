@@ -1,50 +1,5 @@
 <!DOCTYPE html>
 <style>
-    #topnav {
-   width: 100%;
-
-   position: fixed;
-   top: 0;
-   left: 0;
-
-   background-color: Black;
-
-   font-family: Arial, sans-serif;
-   font-size: 15px;
-}
-
-.nav-link {
-   display: inline-block;
-   width: 100px;
-   height: 55px;
-
-   color: White;
-
-   text-align: center;
-   line-height: 55px;
-
-   text-decoration: none;
-}
-
-#logo {
-    width: 16%;
-   background-color: RoyalBlue;
-   font-weight: bold;
-   font-size: 20px;
-}
-
-#link{
-    font-size: 18px;
-}
-
-#scan {
-   position: absolute;
-   top: 0;
-   right: 0;
-   width: 10%;
-   background-color: green;
-   font-size: 20px;
-}
 img {
    display: block;
    margin-top: 8%;
@@ -54,7 +9,8 @@ img {
    margin-left: auto;
    margin-right: auto;
 }
-.info_display, .blink, .high_info_display, .medium_info_display, .low_info_display{
+.blink, .high_info_display, .medium_info_display, .low_info_display{
+   display: inline-block;
    text-align: center;
    margin: 7%;
    margin-left: 7.5%;
@@ -65,11 +21,14 @@ img {
    color: whitesmoke;
    border-radius: 15px;
    vertical-align: top;
-   display: inline-block;
-   
+   border: 5px solid #666;
 }
 
-
+.high_info_display:hover, .medium_info_display:hover, .low_info_display:hover{
+   cursor: pointer;
+   transition: 0.3s ease;
+   filter: brightness(110%);
+}
 
 
 body{
@@ -89,6 +48,7 @@ body{
         animation: blinking 1s infinite;
       }
 
+
 </style>
 <html>
    <head>
@@ -102,11 +62,12 @@ body{
    <span style="font-size: 3em; color: Tomato;">
       <i class="fa-regular fa-crosshairs fa-2xl"></i>
    </span>
+
    <div>
       <img id="status" src="" width="350" height="100">
    </div>
    <div>
-      <div class="high_info_display">
+      <div class="high_info_display" onclick="test()">
          <h1>High alert: <%= alerts.High_Alert %></h1>
       </div>
       <div class="medium_info_display">
@@ -139,6 +100,8 @@ body{
       element = document.getElementsByClassName('high_info_display')
       element[0].style.backgroundColor = 'darkgreen'
    }
+
+   function test(){alert('Worked')}
 
    //Alerts the user when there is a medium risk
    if ('<%= alerts.Medium_Alert %>' > 10){
