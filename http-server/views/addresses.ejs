@@ -3,3 +3,65 @@
     <link rel="stylesheet" type="text/css" href="styles/home.css"/>
 </head>
 <%- include ('./partials/nav'); %>
+
+<style>
+    .container{
+        background-color: royalblue;
+        color: white;
+        margin-top: 8%;
+        margin-left: 5%;
+        margin-right: 55%;
+        padding: 2%;
+        padding-top: 0;
+        font-size: min(3vw, 30px);
+        line-height: 1.8;
+        border-radius: 20px;
+    }
+    .container button{
+        margin-left: 4%;
+        width: 5vw;
+        height: 1.5vw;
+        background-color: whitesmoke;
+    }
+    .container button:hover{
+        cursor: pointer;
+        background-color: gray;
+        color: white;
+    }
+    body{
+        background-color: gray;
+    }
+    .alerted_addresses_container{
+        color: white;
+        margin: 8%;
+        margin-top: -3%;
+        margin-left: 50%;
+        padding: 2%;
+        padding-top: 0;
+        background-color: royalblue;
+        font-size: min(3vw, 30px);
+        line-height: 1.8;
+        border-radius: 20px;
+    }
+</style>
+
+<div class="container">
+    <h2>Scanned addresses: </h2>
+    
+    <ol id="address_list"></ol>
+</div>
+
+<div class="alerted_addresses_container">
+    <h2>Alerted addresses: </h2>
+</div>
+
+<script>
+    //Create view report button which links to the report from scan
+    var address_list = "<%= addresses %>"
+    address_list = address_list.split(",")
+    console.log(address_list)
+    for(let i =0; i < address_list.length; i++){
+        let view_button = '<li>' + address_list[i] + '<a href=http://127.0.0.1:8085/address_report?address='+ address_list[i]+ '><button type="button">View</button></a></li>'
+        document.getElementById('address_list').innerHTML += view_button
+    }
+</script>

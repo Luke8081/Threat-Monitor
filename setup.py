@@ -41,9 +41,6 @@ def set_database():
             High_Alert      INT     NOT NULL,
             Date            DATE    NOT NULL);''')
     conn.close()
-    
-set_database()
-exit()
 
 def banner():
     print(text2art("Automated\n Vulnerabillity\n Scanner"))

@@ -48,6 +48,16 @@ body{
         animation: blinking 1s infinite;
       }
 
+.vuln_container{
+   color: white;
+   margin: 5%;
+   margin-top: -3%;
+   margin-right: 55%;
+   padding: 2%;
+   padding-top: 0.2%;
+   border-radius: 20px;
+   background-color: royalblue;
+}
 
 </style>
 <html>
@@ -77,6 +87,9 @@ body{
          <h1>Low alert: <%= alerts.Low_Alert %></h1>
       </div>
    </div>
+   <div class="vuln_container">
+      <h2>Found vulns: </h2>
+   </div>
 </body>
 
 <script src="https://kit.fontawesome.com/449adc21a1.js" crossorigin="anonymous"></script>
@@ -93,7 +106,7 @@ body{
 
    //Alerts the user if there is a high risk. 
    if ('<%= alerts.High_Alert %>' > 0){
-      alert('ACTION NEEDED. Web server with high risk vulnerability found.')
+      //alert('ACTION NEEDED. Web server with high risk vulnerability found.')
       stylesheet = document.styleSheets[0]
       stylesheet.insertRule('.high_info_display {animation: blinking 1s infinite;}', 0)
    } else{
@@ -122,6 +135,11 @@ body{
       element = document.getElementsByClassName('low_info_display')
       element[0].style.backgroundColor = 'darkgreen'
    }
+
+
+
+   //Add feture where you can seee different vulnribillities from json file
+   
 </script>
 
 

@@ -10,5 +10,5 @@ params = ("test_address", 0, 5, 1, '2023-06-08')
 
 cursor.execute(sql, params)
 
-self.conn.commit()
-self.conn.close()
+conn.commit()
+conn.close()

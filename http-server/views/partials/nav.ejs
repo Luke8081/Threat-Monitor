@@ -1,6 +1,6 @@
 <!DOCTYPE html>
 <style>
-       #topnav {
+#topnav {
    width: 100%;
 
    position: fixed;
@@ -26,6 +26,12 @@
    text-decoration: none;
 }
 
+
+
+.nav-link:hover{
+   font-weight: bold;
+}
+
 #logo {
     width: 16%;
    background-color: RoyalBlue;
@@ -35,6 +41,12 @@
 
 #link{
     font-size: 18px;
+    margin-left: 1.5%;
+    margin-right: 1.5%;
+}
+
+#logo:hover{
+   color: black;
 }
 
 #scan {
@@ -44,16 +56,62 @@
    width: 10%;
    background-color: green;
    font-size: 20px;
-   
+}
+#scan_status{
+   position: absolute;
+   text-align: center;
+   color: white;
+   font-weight: normal;
+   top: 0;
+   right: 25%;
+   margin-top: 0.7%;
+   width: 15%;
+   padding: 4px;
+   background-color: gray;
+   font-size: 20px;
+   border-radius: 10px;
 }
 </style>
 <html>
    <body>
       <nav id="topnav">
-         <a id="logo" class="nav-link" href="#">Scanner Dashboard</a>
-         <a id="link" class="nav-link" href="#">View reports</a>
+         <a id="logo" class="nav-link" href="/">Dashboard</a>
+         <a id="link" class="nav-link" href="#">Reports</a>
          <a id="link" class="nav-link" href="/addresses">Addresses</a>
+         <h1 id="scan_status" class="scan_status">Not running</h1>
          <a id="scan" class="nav-link" href="/run">Scan Now</a>
       </nav>
    </body>
  </html>
+
+ <script>
+   const xhr = new XMLHttpRequest();
+   const url1 = "http://127.0.0.1:8085/status"
+   const status_tag = document.getElementById("scan_status")
+   const status_tag_class = document.getElementsByClassName('scan_status')
+
+   function get_status(){
+      xhr.open("GET", url1, true);
+      xhr.setRequestHeader("Content-Type", "application/json");
+      xhr.onreadystatechange = function () {
+         if (xhr.readyState === 4 && xhr.status === 200) {
+            var status = JSON.parse(xhr.responseText)['status'];
+            console.log(status);
+            status_tag.innerText = status
+            if (status == "Running"){
+               status_tag_class[0].style.backgroundColor = '#0e86d4'
+            } else if(status == "Finished"){
+               status_tag_class[0].style.backgroundColor = 'green'
+            } else if(status == "Error"){
+               status_tag_class[0].style.backgroundColor = 'red'
+            }
+         }
+      };
+      xhr.send()
+   }
+
+   get_status()
+   setInterval(function(){
+      get_status()
+   }, 7000)
+ </script>

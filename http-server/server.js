@@ -12,12 +12,21 @@ app.set('view engine', 'ejs')
 //app.use(partials())
 app.use(express.static(__dirname + '/views'));
 
+var status = "Not running"
+
 function check_DIR(){
     //Change out of current working directory. This is so the program can find files needed
     var current_dir = process.cwd().split("/")
-    if (current_dir[current_dir.length - 1] === "http-server"){
+    while (current_dir[current_dir.length - 1] === "http-server"){
         process.chdir('../')
+        current_dir = process.cwd().split("/")
     }
+}
+
+//Fix this 
+function set_status_not_running(){
+    //status = "Not running"
+    console.log('Test')
 }
 
 //Async function where you can parse a SQL query
@@ -51,8 +60,8 @@ async function get_alerts(){
 async function get_scanned_addresses(){
     let sql = "SELECT Address FROM alert_Summary"
     let addresses = await db_all(sql)
-    addresses = addresses[0].Address
-    return addresses
+    let result = addresses.map(a => a.Address);
+    return result
 }
 
 app.get('/', async function(req, res) {
@@ -67,12 +76,13 @@ app.get('/', async function(req, res) {
 
 app.get('/addresses', async function(req, res) {
     console.log("Load addresses")
-    res.render('addresses')
     let addresses = await get_scanned_addresses()
     console.log(addresses)
+    res.render('addresses', {addresses:addresses})
 });
 
-app.get('/run', function(req, res) {
+app.get('/run', async function(req, res) {
+    status = 'Running'
     console.log('Run button clicked')
     check_DIR()
     const to_run = "python3 " + process.cwd() + "/vuln-Assesment.py"
@@ -80,11 +90,32 @@ app.get('/run', function(req, res) {
     exec(to_run, (err, output) => {
         if (err){
             console.error('Could not run assesment.', err)
+            status = "Error"
         }
+        status = 'Finished'
+        setTimeout(set_status_not_running(), 2000)
         console.log(output)
     })
     res.redirect('/')
 });
+
+app.get('/address_report', function(req, res){
+    check_DIR()
+    //http://127.0.0.1:8085/address_report?address=Test
+    let address = req.query.address
+    console.log(address)
+    //process.chdir(process.cwd()+'/reports/'+address)
+    console.log(process.cwd())
+
+    const nav_bar = fs.readFileSync(process.cwd()+'/http-server/views/partials/nav.ejs', 'utf8');
+    const address_report = fs.readFileSync(process.cwd()+'/reports/'+address+'/2023-06-08.html', 'utf8');
+    res.set('Content-Type', 'text/html');
+    res.send(Buffer.from(nav_bar+address_report));
+})
+
+app.get('/status', function(req, res){
+    res.send({"status": status})
+})
 
 
 app.listen(8085, '127.0.0.1')
