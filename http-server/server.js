@@ -23,6 +23,14 @@ function check_DIR(){
     }
 }
 
+//Function to pause the code
+function sleep(ms) {
+    return new Promise((resolve) => {
+      setTimeout(resolve, ms);
+    });
+  }
+  
+
 //Fix this 
 function set_status_not_running(){
     //status = "Not running"
@@ -82,31 +90,29 @@ app.get('/addresses', async function(req, res) {
 });
 
 app.get('/run', async function(req, res) {
+    console.log('Runnign')
     status = 'Running'
     console.log('Run button clicked')
     check_DIR()
     const to_run = "python3 " + process.cwd() + "/vuln-Assesment.py"
     console.log(to_run)
-    exec(to_run, (err, output) => {
+    exec(to_run, async (err, output) => {
         if (err){
             console.error('Could not run assesment.', err)
             status = "Error"
         }
         status = 'Finished'
-        setTimeout(set_status_not_running(), 2000)
         console.log(output)
+        await sleep(30000)
+        status = 'Not running'
     })
-    res.redirect('/')
+    res.sendStatus(200)
 });
 
 app.get('/address_report', function(req, res){
     check_DIR()
     //http://127.0.0.1:8085/address_report?address=Test
     let address = req.query.address
-    console.log(address)
-    //process.chdir(process.cwd()+'/reports/'+address)
-    console.log(process.cwd())
-
     const nav_bar = fs.readFileSync(process.cwd()+'/http-server/views/partials/nav.ejs', 'utf8');
     const address_report = fs.readFileSync(process.cwd()+'/reports/'+address+'/2023-06-08.html', 'utf8');
     res.set('Content-Type', 'text/html');
@@ -115,6 +121,14 @@ app.get('/address_report', function(req, res){
 
 app.get('/status', function(req, res){
     res.send({"status": status})
+})
+
+app.get('/scan-settings', function(req, res){
+    //http://127.0.0.1:8085/scan-settings?verbose=True&debug=True&email=True
+    let verbose = req.query.verbose
+    let debug = req.query.debug
+    let email = req.query.email
+    console.log(verbose, debug, email)
 })
 
 

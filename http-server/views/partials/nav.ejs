@@ -57,6 +57,11 @@
    background-color: green;
    font-size: 20px;
 }
+
+#scan:hover{
+   cursor: pointer;
+}
+
 #scan_status{
    position: absolute;
    text-align: center;
@@ -79,7 +84,7 @@
          <a id="link" class="nav-link" href="#">Reports</a>
          <a id="link" class="nav-link" href="/addresses">Addresses</a>
          <h1 id="scan_status" class="scan_status">Not running</h1>
-         <a id="scan" class="nav-link" href="/run">Scan Now</a>
+         <a id="scan" class="nav-link" onclick="run_scan()">Scan Now</a>
       </nav>
    </body>
  </html>
@@ -104,9 +109,23 @@
                status_tag_class[0].style.backgroundColor = 'green'
             } else if(status == "Error"){
                status_tag_class[0].style.backgroundColor = 'red'
+            }else{
+               status_tag_class[0].style.backgroundColor = 'gray'
             }
          }
       };
+      xhr.send()
+   }
+
+   function run_scan(){
+      xhr.open("GET", '/run', true);
+      xhr.setRequestHeader("Content-Type", "application/json");
+      xhr.onreadystatechange = function () {
+         if (xhr.readyState === 4 && xhr.status === 200) {
+            status_tag.innerHTML = 'Running'
+            status_tag_class[0].style.backgroundColor = '#0e86d4'
+         }
+      }
       xhr.send()
    }
 
