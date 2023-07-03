@@ -4,15 +4,16 @@ const path = require('path')
 const router = express.Router()
 const { exec } = require('node:child_process')
 const sqlite = require('sqlite3').verbose()
-var partials = require('express-partials')
 
 var app = express();
 
 app.set('view engine', 'ejs')
 //app.use(partials())
 app.use(express.static(__dirname + '/views'));
+app.use(express.json())
 
 var status = "Not running"
+var console_text = ""
 
 function check_DIR(){
     //Change out of current working directory. This is so the program can find files needed
@@ -23,19 +24,28 @@ function check_DIR(){
     }
 }
 
+function write_config(json){
+    check_DIR()
+    let data = JSON.stringify(json);
+    console.log(process.cwd()+'/config.json')
+    fs.writeFileSync(process.cwd()+'/config.json', data)
+}
+
+function read_config(){
+    check_DIR()
+    let rawdata = fs.readFileSync(process.cwd()+'/config.json');
+    let json = JSON.parse(rawdata);
+    console.log(json)
+    return json
+}
+
+
 //Function to pause the code
 function sleep(ms) {
     return new Promise((resolve) => {
       setTimeout(resolve, ms);
     });
   }
-  
-
-//Fix this 
-function set_status_not_running(){
-    //status = "Not running"
-    console.log('Test')
-}
 
 //Async function where you can parse a SQL query
 async function db_all(query){
@@ -100,8 +110,10 @@ app.get('/run', async function(req, res) {
         if (err){
             console.error('Could not run assesment.', err)
             status = "Error"
+            console_text = "Error"
         }
         status = 'Finished'
+        console_text += output
         console.log(output)
         await sleep(30000)
         status = 'Not running'
@@ -125,12 +137,34 @@ app.get('/status', function(req, res){
 
 app.get('/scan-settings', function(req, res){
     //http://127.0.0.1:8085/scan-settings?verbose=True&debug=True&email=True
-    let verbose = req.query.verbose
-    let debug = req.query.debug
-    let email = req.query.email
-    console.log(verbose, debug, email)
+    if (Object.keys(req.query).length === 0){
+        res.send(read_config())
+    }else{
+        write_config(req.query)
+    } 
 })
 
+app.get('/console', function(req,res){
+    if (Object.keys(req.query).length === 0){
+        res.send(console_text)
+    }else if (req.query.clear){
+        console_text = ""
+    }
+})
+
+app.get('/address_list', function(req,res){
+    check_DIR()
+    let data = fs.readFileSync(process.cwd()+'/addresses.txt');
+    console.log(data)
+    res.send(data)
+})
+
+app.post('/edit_addresses', function(req, res){
+    check_DIR()
+    let data = req.body['addresses']
+    fs.writeFileSync(process.cwd()+'/addresses.txt', data);
+    res.sendStatus(200)
+})
 
 app.listen(8085, '127.0.0.1')
 

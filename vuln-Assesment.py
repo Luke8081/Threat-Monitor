@@ -34,6 +34,7 @@ class Assesment:
         self.zap = None
         self.conn = sqlite3.connect("reports/database.db")
 
+
         #Debug mode is very verbose
         if self.debug:
             self.verbose = True
@@ -78,7 +79,7 @@ class Assesment:
         while self.zap == None:
             try:
                 self.zap = ZAPv2(apikey=self.API_key)
-                if self.zap:
+                if self.zap and self.verbose:
                     print("Connected to Zap server")
             except:
                 if count == 5:
@@ -372,7 +373,10 @@ def main():
     #Read addresses from file and store as list
     #raise Exception("This is a test")
     addresses = open(f'{os.getcwd()}/addresses.txt', 'r').read().split('\n')
-    test = Assesment(addresses, verbose=True, send_email=False, debug=False)
+    #Read json file and turn it into a disctonary 
+    config_file = open(f'{os.getcwd()}/config.json', 'r').read()
+    config = json.loads(config_file)
+    test = Assesment(addresses, verbose=(config['verbose'] == 'true'), send_email=(config['email']=='true'), debug=(config['debug']=='true'))
     test.run_Assesment()
     test.log()
 
