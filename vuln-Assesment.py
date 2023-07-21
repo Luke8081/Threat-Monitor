@@ -16,7 +16,7 @@ import cronitor, json, sqlite3
 load_dotenv()
 
 class Assesment:
-    def __init__(self, addresses, verbose, send_email, debug):
+    def __init__(self, addresses, verbose, send_email, debug, spider, save_reports, scan_type):
 
         self.API_key = os.getenv("API_KEY")
         self.email_passwd = os.getenv("EMAIL_PASSWD")
@@ -32,7 +32,10 @@ class Assesment:
         self.high_Risk = False
         self.alarm = False
         self.zap = None
-        self.conn = sqlite3.connect("reports/database.db")
+        self.spider_scan = spider
+        self.save_reports = save_reports
+        self.scan_type = scan_type
+
 
 
         #Debug mode is very verbose
@@ -118,6 +121,23 @@ class Assesment:
         fileName = f"{address}_{self.date}"
 
         #Gets all of the sites directories
+        if self.spider_scan == False:
+            #Sets spider depth 1 meaning it deosnt explore whole website
+            depth = 1
+        else:
+            #change this to adjust scan depth
+            depth = 7
+
+        headers = {
+        'Accept': 'application/json',
+        'X-ZAP-API-Key': self.API_key
+        }
+        r = requests.get('http://127.0.0.1:8080/JSON/spider/action/setOptionMaxDepth/', params={
+        'Integer': depth
+        }, headers = headers)
+        if r.status_code != 200:
+            raise Exception("Failed to set spider depth. Couldn't connect to API")
+
         self.spider(address)
 
         #Start the active scan
@@ -143,7 +163,8 @@ class Assesment:
             pprint(self.zap.core.alerts(baseurl=address))
         
         #Get a report of the scan
-        self.get_Report(address)
+        if self.save_reports:
+            self.get_Report(address)
         #Get any alerts 
         self.get_Alerts(address)
         
@@ -154,7 +175,7 @@ class Assesment:
 
         scanID = self.zap.spider.scan(address)
 
-        if self.verbose:
+        if self.verbose and self.spider_scan:
             print(f'Spidering target {address}')
             
             #Prints the progress
@@ -175,13 +196,18 @@ class Assesment:
 
         #Loop through address and scan each one and time how long it takes
         for address in self.addresses:
+            #Stop at end of list 
             if address == "":
-                raise Exception('Make sure there are no extra lines in addresses file')
+                break
             self.active_Scan(address)
             self.address_counter += 1
 
         #Shutdown zap server
         self.zap.core.shutdown()
+
+        #Close database 
+        if self.save_reports:
+            self.conn.close()
             
         stop_timer = time.perf_counter()
         self.time = round(stop_timer - start_timer, 2)
@@ -194,7 +220,7 @@ class Assesment:
         
         msg = f"\nScanned {self.address_counter} addresses in {self.time} seconds. Number of alerts: {self.alert_count}. Completed on {self.date_time}."
 
-        if self.medium_Alert:
+        if self.high_Alert:
             msg = msg + " - ACTION NEEDED."
 
         print(msg)
@@ -283,14 +309,17 @@ class Assesment:
         self.alert_count = self.high_Alert + self.medium_Alert + self.low_Alert
 
         #Store the results in the database
-        self.insert_or_update_scan(address)
+        if self.save_reports:
+            self.insert_or_update_scan(address)
 
 
         if bool(self.high_Alert) and self.send_email:
             self.send_alert_email()
         
     def insert_or_update_scan(self, address):
+
         #Set up connection to the data base
+        self.conn = sqlite3.connect("reports/database.db")
         cursor = self.conn.cursor()
 
         params = (address, self.low_Alert, self.medium_Alert, self.high_Alert, self.date)
@@ -299,11 +328,20 @@ class Assesment:
         cursor.execute('SELECT Address FROM alert_Summary WHERE Address = ?', (address,))
         exists_row = cursor.fetchone()
 
+        print(exists_row)
+        
         if exists_row is None:
+            print('adding new')
             sql = f'''INSERT INTO alert_Summary('Address','Low_Alert', 'Medium_Alert', 'High_Alert', 'Date')
             VALUES(?,?,?,?,?)'''
         else:
-            sql = '''UPDATE alert_Summary SET Address = ?, Low_Alert = ?, Medium_Alert = ?, High_Alert = ?, Date = ?'''
+            params = (self.low_Alert, self.medium_Alert, self.high_Alert, self.date, address)
+            print('Updating')
+            sql = '''UPDATE alert_Summary SET Low_Alert = ?, Medium_Alert = ?, High_Alert = ?, Date = ? WHERE Address = ?'''
+        
+
+        #sql = f'''INSERT INTO OR REPLACE alert_Summary('Address','Low_Alert', 'Medium_Alert', 'High_Alert', 'Date')
+        #    VALUES(?,?,?,?,?)'''
 
         if self.debug:
             print('Writing results to database...')
@@ -338,6 +376,7 @@ class Assesment:
                     </html>
                     '''
 
+        #NEeeds improvments here
         file = open(self.file_name, 'r')
         report = file.read()
         file.close()
@@ -360,6 +399,7 @@ class Assesment:
 
 #Set up cronitor. If you don't want to use cronitor delete the cronitor code
 # and the decoration around the main function.
+
 cronitor.api_key = os.getenv("CRONITOR_API_KEY")
 cronitor.Monitor.put(
     key='vuln-Assesment',
@@ -376,7 +416,7 @@ def main():
     #Read json file and turn it into a disctonary 
     config_file = open(f'{os.getcwd()}/config.json', 'r').read()
     config = json.loads(config_file)
-    test = Assesment(addresses, verbose=(config['verbose'] == 'true'), send_email=(config['email']=='true'), debug=(config['debug']=='true'))
+    test = Assesment(addresses, verbose=(config['verbose'] == 'true'), send_email=(config['email']=='true'), debug=(config['debug']=='true'), spider=(config['spider']=='true'), save_reports=(config['save_reports']=='true'), scan_type=(config['scan_type']=='true'))
     test.run_Assesment()
     test.log()
 

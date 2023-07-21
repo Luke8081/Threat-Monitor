@@ -6,6 +6,7 @@
    position: fixed;
    top: 0;
    left: 0;
+   z-index: 1;
 
    background-color: Black;
 
@@ -76,13 +77,22 @@
    font-size: 20px;
    border-radius: 10px;
 }
+
+.block{
+   cursor: wait;
+  pointer-events: none;
+  opacity: 0.65;
+  filter: alpha(opacity=65);
+  -webkit-box-shadow: none;
+  box-shadow: none;
+  
+}
 </style>
 <html>
    <body>
       <nav id="topnav">
          <a id="logo" class="nav-link" href="/">Dashboard</a>
-         <a id="link" class="nav-link" href="#">Reports</a>
-         <a id="link" class="nav-link" href="/addresses">Addresses</a>
+         <a id="link" class="nav-link" href="/addresses">Reports</a>
          <h1 id="scan_status" class="scan_status">Not running</h1>
          <a id="scan" class="nav-link" onclick="run_scan()">Scan Now</a>
       </nav>
@@ -91,24 +101,27 @@
 
  <script>
    const xhr = new XMLHttpRequest();
-   const url1 = "http://127.0.0.1:8085/status"
+   const url1 = "/status"
    const status_tag = document.getElementById("scan_status")
    const status_tag_class = document.getElementsByClassName('scan_status')
+   var status = ''
 
    function get_status(){
       xhr.open("GET", url1, true);
       xhr.setRequestHeader("Content-Type", "application/json");
       xhr.onreadystatechange = function () {
          if (xhr.readyState === 4 && xhr.status === 200) {
-            var status = JSON.parse(xhr.responseText)['status'];
-            console.log(status);
+            status = JSON.parse(xhr.responseText)['status'];
             status_tag.innerText = status
             if (status == "Running"){
                status_tag_class[0].style.backgroundColor = '#0e86d4'
+               document.getElementById("scan").classList.add('block');
             } else if(status == "Finished"){
                status_tag_class[0].style.backgroundColor = 'green'
+               document.getElementById("scan").classList.remove('block');
             } else if(status == "Error"){
                status_tag_class[0].style.backgroundColor = 'red'
+               document.getElementById("scan").classList.remove('block');
             }else{
                status_tag_class[0].style.backgroundColor = 'gray'
             }
@@ -118,12 +131,16 @@
    }
 
    function run_scan(){
+      if (status == "running"){
+         return
+      }
       xhr.open("GET", '/run', true);
       xhr.setRequestHeader("Content-Type", "application/json");
       xhr.onreadystatechange = function () {
          if (xhr.readyState === 4 && xhr.status === 200) {
             status_tag.innerHTML = 'Running'
             status_tag_class[0].style.backgroundColor = '#0e86d4'
+            document.getElementById("scan").classList.add('block');
          }
       }
       xhr.send()
@@ -132,5 +149,5 @@
    get_status()
    setInterval(function(){
       get_status()
-   }, 7000)
+   }, 4000)
  </script>

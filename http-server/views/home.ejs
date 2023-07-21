@@ -1,243 +1,8 @@
 <!DOCTYPE html>
-<style>
-img {
-   display: inline-block;
-   max-width: 100%;
-   height: auto;
-   width: auto\9; 
-}
-.blink, .high_info_display, .medium_info_display, .low_info_display{
-   display: inline-block;
-   text-align: center;
-   margin: 7%;
-   margin-left: 7.5%;
-   padding: 1%;
-   width: 16%;
-   height: 10%;
-   background-color: black;
-   color: whitesmoke;
-   border-radius: 15px;
-   vertical-align: top;
-   border: 5px solid #666;
-}
-
-.high_info_display:hover, .medium_info_display:hover, .low_info_display:hover{
-   cursor: pointer;
-   transition: 0.3s ease;
-   filter: brightness(110%);
-}
-
-
-body{
-   background-color: #5f5f61;
-}
-@keyframes blinking {
-   0% {
-      background-color: black;
-      border: 3px solid #666;
-   }
-   100% {
-      background-color: red;
-      border: 3px solid #666;
-   }
-}
-.blink {
-        animation: blinking 1s infinite;
-      }
-
-.vuln_container{
-   color: white;
-   margin: 5%;
-   margin-top: -3%;
-   margin-right: 55%;
-   padding: 2%;
-   padding-top: 0.2%;
-   border-radius: 20px;
-   background-color: royalblue;
-}
-
-p{
-   margin-left: 5%;
-   color: white;
-   font-size: 25px;
-   font-weight: bold;
-
-}
-
-/* The switch - the box around the slider */
-.switch {
-   position: relative;
-   display: inline-block;
-   width: 60px;
-   height: 34px;
-   margin-left:auto;
-   margin-top: 5%;
-   margin-right: 5%;
-}
-
-.switch-container{
-   margin-top: 1%;
-   display: flex;
-}
-
-/*Get rid of original box*/
-.switch input {
-  opacity: 0;
-  width: 0;
-  height: 0;
-}
-
-
-.slider {
-  position: absolute;
-  cursor: pointer;
-  top: 0;
-  left: 0;
-  right: 0;
-  bottom: 0;
-  background-color: #ccc;
-  -webkit-transition: .4s;
-  transition: .4s;
-}
-
-.slider.round {
-  border-radius: 34px;
-}
-
-.slider.round:before {
-  border-radius: 50%;
-}
-
-.slider:before {
-  position: absolute;
-  content: "";
-  height: 26px;
-  width: 26px;
-  left: 4px;
-  bottom: 4px;
-  background-color: white;
-  -webkit-transition: .4s;
-  transition: .4s;
-}
-
-input:checked + .slider {
-  background-color: #12e912;
-}
-
-input:focus + .slider {
-  box-shadow: 0 0 1px #2196F3;
-}
-
-input:checked + .slider:before {
-  -webkit-transform: translateX(26px);
-  -ms-transform: translateX(26px);
-  transform: translateX(26px);
-}
-
-.settings-container{
-   display: inline-block;
-   margin-top: -110%;
-   margin-left: 63%;
-   margin-right: 5%;
-   padding: 2%;
-   background-color: #2e3683;
-   border-radius: 30px;
-}
-
-.output-container{
-   display: inline-block;
-   margin-top: 10%;
-   margin-left: 5%;
-   width: 35%;
-   height: 30%;
-   padding:5%;
-   color: white;
-   background-color: #2e3683;
-   border-radius: 30px;
-   padding-bottom: 1%;
-}
-
-.output-nav{
-   background-color: #2e6883;
-   padding: 4%;
-   margin-top: -14.5%;
-   margin-left: -9%;
-   width: 110%;
-   border-radius: 30px;
-}
-.output-nav div{
-   display: inline;
-   /*background-color: #91b7c9;*/
-}
-
-.addresses-button{
-   float: right;
-   padding: 3.5%;
-   margin-top: -3.5%;
-   margin-right: -3.5%;
-   padding-left: 20%;
-   border-radius: 30px;
-   text-align: center;
-   transition-duration: 0.5s;
-}
-
-.addresses-button:hover{
-   cursor: pointer;
-   font-weight: bold;
-}
-
-.console-button{
-   padding: 3.5%;
-   margin-top: -3.5%;
-   margin-left: -3.5%;
-   padding-right: 20%;
-   border-radius: 30px;
-   text-align: center;  
-   transition-duration: 0.5s;
-}
-
-.console-button:hover{
-   cursor: pointer;
-   font-weight: bold;
-}
-
-.output-text-class{
-    overflow-y: scroll;
-    height: 300px;
-    width: 100%;
-    resize: none;
-    margin-bottom: -5%;
-    margin-top: 10%;
-}
-
-.refresh_button{
-   background-color: #2196F3;
-   float: right;
-   width: 20%;
-   height: 5%;
-   margin-top: 10%;
-   padding: 0.7%;
-   text-decoration: none;
-   border: none;
-   color: white;
-   font-size: 15px;
-   box-shadow: 0 3px #999;
-}
-
-.refresh_button:hover{
-   cursor: pointer;
-   filter: brightness(110%);
-}
-
-.refresh_button:active {
-  box-shadow: 0 5px #666;
-  transform: translateY(4px);
-}
-
-
-</style>
 <html>
    <head>
+      <link rel="stylesheet" type="text/css" href="css/home.css" />
+      <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-9ndCyUaIbzAi2FUVXJi0CjmCapSmO7SnpJef0486qhLnuZ2cdeRhO02iuK6FUUVM" crossorigin="anonymous">
       <meta charset="utf-8">
       <title>Scanner Dashboard</title>
    </head>
@@ -245,246 +10,118 @@ input:checked + .slider:before {
 <%- include ('./partials/nav'); %>
 
 <body>
+   
+   <div class="row">
+      <div class="col-6">
+         <div class="output-container">
+            <nav class="output-nav">
+               <div id='console' class="console-button" onclick="console_click()">Console</div>
+               <div id='address' class="addresses-button" onclick="address_click()">Addresses</div>
+            </nav>
+            <div class="output-msg-container"><p id="output-msg">Output</p></div>
+            
 
-   <div class="output-container">
-      <nav class="output-nav">
-         <div id='console' class="console-button" onclick="console_click()">Console</div>
-         <div id='address' class="addresses-button" onclick="address_click()">Addresses</div>
-      </nav>
-      <textarea id='output-text' class='output-text-class'></textarea>
-      <button id="refresh_button" class="refresh_button" onclick="button_click()">Clear</button>
-   </div>
+            <div class="scroll_button_container">
+               <textarea id='output-text' class='output-text-class'></textarea>
+               <img onclick="scroll_textArea_down()" class="scroll_down_image" id="scroll_down_image" src="/images/arrows-down.png" height="60" width="60">
+            </div>
 
-   <div class="settings-container">
-      <img id="status" src="" width="350" height="100">
-      <div class="switch-container">
-         <p>Debug mode:</p>
-         <label class="switch">
-            <input onclick='change_settings()' type="checkbox" id="debug_mode">
-            <span class="slider round"></span>
-         </label>
+            <button id="refresh_button" class="refresh_button" onclick="button_click()">Clear</button>
+            <button id="view_scan_button" class="view_scan_button" onclick="scan_log_click()">View log</button>
+            
+         </div>
       </div>
-      <div class="switch-container">
-         <p>Verbose mode:</p>
-         <label class="switch">
-            <input onclick='change_settings()' type="checkbox" id="verbose_mode">
-            <span class="slider round"></span>
-         </label>
-      </div>
-      <div class="switch-container">
-         <p>Send email:</p>
-         <label class="switch">
-            <input onclick='change_settings()' type="checkbox" id="send_email">
-            <span class="slider round"></span>
-         </label>
-      </div>
-   </div>
 
-   <div>
-      <div class="high_info_display" onclick="test()">
-         <h1>High alert: <%= alerts.High_Alert %></h1>
+   <div class="col-6">
+      <div class="image-container">
+         <img id="status" src="" width="350" height="100">
       </div>
-      <div class="medium_info_display">
-         <h1>Medium alert: <%= alerts.Medium_Alert %></h1>
-      </div>
-      <div class="low_info_display">
-         <h1>Low alert: <%= alerts.Low_Alert %></h1>
+      <div class="settings-container">
+         <p class="settings-title">Settings</p>
+         <hr class="setting_gap">
+         <div class="switch-container">
+            <p>Debug mode:</p>
+            <label class="switch">
+               <input onclick='change_settings()' type="checkbox" id="debug_mode">
+               <span class="slider round"></span>
+            </label>
+         </div>
+         <hr class="setting_gap">
+         <div class="switch-container">
+            <p>Verbose mode:</p>
+            <label class="switch">
+               <input onclick='change_settings()' type="checkbox" id="verbose_mode">
+               <span class="slider round"></span>
+            </label>
+         </div>
+         <hr class="setting_gap">
+         <div class="switch-container">
+            <p>Alerts:</p>
+            <label class="switch">
+               <input onclick='change_settings()' type="checkbox" id="send_email">
+               <span class="slider round"></span>
+            </label>
+         </div>
+         <hr class="setting_gap">
+         <div class="switch-container">
+            <p>Spider targets:</p>
+            <label class="switch">
+               <input onclick='change_settings()' type="checkbox" id="spider">
+               <span class="slider round"></span>
+            </label>
+         </div>
+         <hr class="setting_gap">
+         <div class="switch-container">
+            <p>Save reports:</p>
+            <label class="switch">
+               <input onclick='change_settings()' type="checkbox" id="save_reports">
+               <span class="slider round"></span>
+            </label>
+         </div>
+         <hr class="setting_gap">
+         <div class="scan_type_container">
+            <p class="passive_text">Passive</p>
+            <label class="scan_type_switch">
+               <input onclick='change_settings()' type="checkbox" id="scan_type">
+               <span class="scan_type_slider round"></span>
+            </label>
+            <p class="active_text">Active</p>
+         </div>
       </div>
    </div>
-   <div class="vuln_container">
-      <h2>Recent scans: </h2>
+   </div>
+   <div class="row">
+      <div class="col-4">
+         <div class="high_info_display" onclick="test()">
+            <h1>High alert: <%= alerts.High_Alert %></h1>
+         </div>
+      </div>
+      <div class="col-4">
+         <div class="medium_info_display">
+            <h1>Medium alert: <%= alerts.Medium_Alert %></h1>
+         </div>
+      </div>
+      <div class="col-4">
+         <div class="low_info_display">
+            <h1>Low alert: <%= alerts.Low_Alert %></h1>
+         </div>
+      </div>
+   </div>
+   <div class="row">
+      <div class="col-6">
+         <div class="vuln_container">
+            <h2>Recent scans: </h2>
+         </div>
+      </div>
+      <div class="col-6">
+         <div class="sql_vuln_container">
+            <h2>Alerts </h2>
+         </div>
+      </div>
    </div>
 </body>
 
-
-<script>
-   //Needed for showing user different views
-   var view = 'console'
-
-   //Updates image every 10 seconds. Needs to be random element to stop browser reusing image in cache
-   const url = "https://cronitor.io/badges/uKVpG4/production/iVvSLth_Vq5UwQMd0yDkm40Ivjg.svg"
-   var image = document.getElementById("status")
-   image.src = url
-   
-
-   setInterval(function(){
-      var image = document.getElementById("status")
-      image.src = url + "?rand=" + Math.random()
-   }, 7000)
-
-   //Alerts the user if there is a high risk. 
-   if ('<%= alerts.High_Alert %>' > 0){
-      //alert('ACTION NEEDED. Web server with high risk vulnerability found.')
-      stylesheet = document.styleSheets[0]
-      stylesheet.insertRule('.high_info_display {animation: blinking 1s infinite;}', 0)
-   } else{
-      element = document.getElementsByClassName('high_info_display')
-      element[0].style.backgroundColor = 'darkgreen'
-   }
-
-   //Alerts the user when there is a medium risk
-   if ('<%= alerts.Medium_Alert %>' > 10){
-      stylesheet = document.styleSheets[0]
-      stylesheet.insertRule('.medium_info_display {animation: blinking 1s infinite;}', 0)
-   }else if ('<%= alerts.Medium_Alert %>' > 1){
-      element = document.getElementsByClassName('medium_info_display')
-      element[0].style.backgroundColor = 'orange'
-   }else{
-      element = document.getElementsByClassName('medium_info_display')
-      element[0].style.backgroundColor = 'darkgreen'
-   }
-
-   if ('<%= alerts.Low_Alert %>' > 20){
-      element = document.getElementsByClassName('low_info_display')
-      element[0].style.backgroundColor = 'orange'
-   } else{
-      element = document.getElementsByClassName('low_info_display')
-      element[0].style.backgroundColor = 'darkgreen'
-   }
-
-   //If user changes settings send them to server
-   function change_settings(){
-      let debug = document.getElementById('debug_mode').checked
-      let verbose = document.getElementById('verbose_mode').checked
-      let email = document.getElementById('send_email').checked
-
-      const xhr = new XMLHttpRequest();
-      const url = '/scan-settings'
-      const params = '?verbose='+verbose+'&debug='+debug+'&email='+email
-      xhr.open("GET", url+params, true);
-         xhr.setRequestHeader("Content-Type", "application/json");
-         xhr.onreadystatechange = function () {
-            if (xhr.readyState === 4 && xhr.status === 200) {
-               console.log('Recieved')
-            };
-         }
-         xhr.send()
-   }
-
-   //Load the settings
-   function get_checked_settings(){
-      const xhr = new XMLHttpRequest();
-      xhr.open("GET", '/scan-settings', true);
-         xhr.setRequestHeader("Content-Type", "application/json");
-         xhr.onreadystatechange = function () {
-            if (xhr.readyState === 4 && xhr.status === 200) {
-               var settings = JSON.parse(xhr.responseText);
-               document.getElementById('verbose_mode').checked = (settings['verbose'] === 'true')
-               document.getElementById('debug_mode').checked = (settings['debug'] === 'true')
-               document.getElementById('send_email').checked = (settings['email'] === 'true')        
-            };
-      }
-      xhr.send()
-   }
-   get_checked_settings()
-
-   function address_click(){
-      view = 'addresses'
-
-      let address = document.getElementById("address")
-      address.style.backgroundColor="#91b7c9";
-      address.style.fontWeight = 'bold'
-
-      let console = document.getElementById("console")
-      console.style.backgroundColor="#2e6883";
-      console.style.fontWeight = 'normal'
-
-      document.getElementById('refresh_button').innerHTML = 'Save'
-      document.getElementById('output-text').readOnly = false
-
-      get_addresses()
-   }
-
-   function console_click(){
-      view = 'console'
-      let console = document.getElementById("console")
-      console.style.backgroundColor="#91b7c9";
-      console.style.fontWeight = 'bold'
-
-      let address = document.getElementById("address")
-      address.style.backgroundColor="#2e6883";
-      address.style.fontWeight = 'normal'
-
-      document.getElementById('refresh_button').innerHTML = 'Clear'
-      document.getElementById('output-text').readOnly = true
-
-      update_console()
-   }
-
-   function update_console(){
-      const xhr = new XMLHttpRequest();
-      xhr.open("GET", '/console', true);
-         xhr.setRequestHeader("Content-Type", "application/json");
-         xhr.onreadystatechange = function () {
-            if (xhr.readyState === 4 && xhr.status === 200) {
-               let output = xhr.responseText.replace('\n', '\\n')
-               document.getElementById('output-text').value = output
-            };
-      }
-      xhr.send()
-   }
-
-   function clear_console(){
-      const xhr = new XMLHttpRequest();
-         const params = '?clear=true'
-         xhr.open("GET", '/console'+params, true);
-            xhr.setRequestHeader("Content-Type", "application/json");
-            xhr.onreadystatechange = function () {
-               if (xhr.readyState === 4 && xhr.status === 200) {
-                  update_console()
-               };
-         }
-         xhr.send()
-   }
-
-   function button_click(){
-      if (view == 'console'){
-         clear_console()
-      }else{
-         send_addresses()
-      }
-   }
-
-   function get_addresses(){
-      const xhr = new XMLHttpRequest();
-      xhr.open("GET", '/address_list', true);
-         xhr.setRequestHeader("Content-Type", "application/json");
-         xhr.onreadystatechange = function () {
-            if (xhr.readyState === 4 && xhr.status === 200) {
-               console.log(xhr.responseText)
-               let output = xhr.responseText.replace('\n', '\\n')
-               document.getElementById('output-text').value = output
-            };
-      }
-      xhr.send()
-   }
-
-   function send_addresses(){
-      let data = document.getElementById('output-text').value
-      const xhr = new XMLHttpRequest();
-      xhr.open("POST", '/edit_addresses', true);
-         xhr.setRequestHeader("Content-Type", "application/json");
-         xhr.onreadystatechange = function () {
-            if (xhr.readyState === 4 && xhr.status === 200) {
-               console.log('worked')
-            };
-      }
-      xhr.send(JSON.stringify({addresses: data}))
-   }
-
-   setInterval(function(){
-      if (view == 'console'){
-         update_console()
-      }
-   },5000)
-
-   console_click()
-   //Add feture where you can seee different vulnribillities from json file  
-
-   
-   
-</script>
-
+<script src="javascript/home.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.11.8/dist/umd/popper.min.js" integrity="sha384-I7E8VVD/ismYTF4hNIPjVp/Zjvgyol6VFvRkX/vR+Vc4jQkC+hVqc2pM8ODewa9r" crossorigin="anonymous"></script>
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.min.js" integrity="sha384-fbbOQedDUMZZ5KreZpsbe1LCZPVmfTnH7ois6mU1QK+m14rQ1l2bGBq41eYeM/fS" crossorigin="anonymous"></script>
 

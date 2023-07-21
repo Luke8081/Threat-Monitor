@@ -20,10 +20,8 @@ def make_env_file():
     print(f"File saved to: {os.getcwd()}/.env")
 
 def install_Zap():
-    print("Downloading Zap and required packages")
-    os.system("apt install default-jre")
-    os.system("apt install snapd -y")
-    os.system("snap install zaproxy --classic")
+    #Installs zap. Then runs file
+    os.system("wget -O zap_installer.sh https://github.com/zaproxy/zaproxy/releases/download/v2.13.0/ZAP_2_13_0_unix.sh && chmod +x zap_installer.sh && ./zap_installer.sh")
 
 def set_database():
     import sqlite3
@@ -47,15 +45,25 @@ def banner():
     print(text2art("Author: Luke"))
 
 def install_req():
+    #Download pip 
+    os.system('apt install python3-pip')
     #Download the requirements 
     os.system("pip install -r requirements.txt")
+
+def setup_http_server():
+    os.chdir(os.getcwd() + '/http-server')
+    os.system('apt install nodejs')
+    os.system('apt install npm')
+    os.system('npm install express sqlite3')
+    os.system('npm install')
+    os.chdir("../")
 
 
 
 if __name__ == "__main__":
     #Checks the user is root. If they are asks if they want to download the zap server
     if os.geteuid()==0:
-        print("Would you like to install Zap server and required packages(y/n)?")
+        print("Would you like to install Zap server(y/n)?")
         if input() == "y":
             install_Zap()
     else:
@@ -72,7 +80,11 @@ if __name__ == "__main__":
     print("Would you like to install required python packages(y/n)?")
     if input() == "y":
         install_req()
-    
+
+    if os.geteuid()==0:
+        #Install packages for web server
+        setup_http_server()
+
     from art import *
     banner()
     
