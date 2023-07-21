@@ -105,3 +105,75 @@ Scanned 1 addresses in 11.85 seconds. Number of alerts: 12. Completed on 2023-07
 Scanned 1 addresses in 12.87 seconds. Number of alerts: 12. Completed on 2023-07-03 16:03:55. - ACTION NEEDED.
 Scanned 1 addresses in 13.01 seconds. Number of alerts: 12. Completed on 2023-07-03 16:20:42. - ACTION NEEDED.
 Scanned 1 addresses in 11.99 seconds. Number of alerts: 12. Completed on 2023-07-03 16:25:01. - ACTION NEEDED.
+Scanned 1 addresses in 13.44 seconds. Number of alerts: 12. Completed on 2023-07-04 09:35:12. - ACTION NEEDED.
+Scanned 1 addresses in 13.09 seconds. Number of alerts: 12. Completed on 2023-07-04 09:36:12. - ACTION NEEDED.
+Scanned 1 addresses in 13.51 seconds. Number of alerts: 12. Completed on 2023-07-04 09:39:22. - ACTION NEEDED.
+Scanned 1 addresses in 13.22 seconds. Number of alerts: 12. Completed on 2023-07-04 10:45:44. - ACTION NEEDED.
+Scanned 1 addresses in 13.02 seconds. Number of alerts: 12. Completed on 2023-07-04 10:46:59. - ACTION NEEDED.
+Scanned 1 addresses in 13.21 seconds. Number of alerts: 12. Completed on 2023-07-04 10:51:56. - ACTION NEEDED.
+Scanned 1 addresses in 12.87 seconds. Number of alerts: 12. Completed on 2023-07-04 10:56:28. - ACTION NEEDED.
+Scanned 1 addresses in 13.06 seconds. Number of alerts: 12. Completed on 2023-07-04 11:16:16. - ACTION NEEDED.
+Scanned 1 addresses in 12.96 seconds. Number of alerts: 12. Completed on 2023-07-04 11:49:09. - ACTION NEEDED.
+Scanned 1 addresses in 12.03 seconds. Number of alerts: 12. Completed on 2023-07-04 11:53:57. - ACTION NEEDED.
+Scanned 1 addresses in 12.79 seconds. Number of alerts: 12. Completed on 2023-07-04 12:33:39. - ACTION NEEDED.
+Scanned 1 addresses in 11.87 seconds. Number of alerts: 12. Completed on 2023-07-04 12:47:29. - ACTION NEEDED.
+Scanned 1 addresses in 16.41 seconds. Number of alerts: 12. Completed on 2023-07-04 14:21:03. - ACTION NEEDED.
+Scanned 1 addresses in 12.77 seconds. Number of alerts: 12. Completed on 2023-07-04 14:23:20. - ACTION NEEDED.
+Scanned 1 addresses in 16.62 seconds. Number of alerts: 12. Completed on 2023-07-04 16:02:36. - ACTION NEEDED.
+Scanned 1 addresses in 12.44 seconds. Number of alerts: 12. Completed on 2023-07-04 16:06:38. - ACTION NEEDED.
+Scanned 1 addresses in 12.47 seconds. Number of alerts: 12. Completed on 2023-07-04 16:07:26. - ACTION NEEDED.
+Scanned 1 addresses in 15.55 seconds. Number of alerts: 12. Completed on 2023-07-04 16:31:23. - ACTION NEEDED.
+Scanned 1 addresses in 11.52 seconds. Number of alerts: 12. Completed on 2023-07-04 16:31:56. - ACTION NEEDED.
+Scanned 1 addresses in 13.52 seconds. Number of alerts: 12. Completed on 2023-07-04 16:36:20. - ACTION NEEDED.
+Scanned 2 addresses in 56.91 seconds. Number of alerts: 15. Completed on 2023-07-04 16:38:25. - ACTION NEEDED.
+Scanned 2 addresses in 59.1 seconds. Number of alerts: 15. Completed on 2023-07-04 16:58:49. - ACTION NEEDED.
+Scanned 2 addresses in 55.3 seconds. Number of alerts: 15. Completed on 2023-07-04 17:07:49. - ACTION NEEDED.
+Scanned 2 addresses in 58.96 seconds. Number of alerts: 15. Completed on 2023-07-04 17:20:53. - ACTION NEEDED.
+Scanned 2 addresses in 54.8 seconds. Number of alerts: 15. Completed on 2023-07-04 17:22:13. - ACTION NEEDED.
+Scanned 2 addresses in 72.18 seconds. Number of alerts: 15. Completed on 2023-07-05 10:10:40. - ACTION NEEDED.
+Scanned 2 addresses in 58.31 seconds. Number of alerts: 15. Completed on 2023-07-05 12:32:15. - ACTION NEEDED.
+Scanned 2 addresses in 69.26 seconds. Number of alerts: 15. Completed on 2023-07-07 09:36:57. - ACTION NEEDED.
+Scanned 2 addresses in 67.37 seconds. Number of alerts: 15. Completed on 2023-07-07 09:41:51. - ACTION NEEDED.
+Scanned 2 addresses in 57.9 seconds. Number of alerts: 15. Completed on 2023-07-10 09:54:09. - ACTION NEEDED.
+Scanned 2 addresses in 55.65 seconds. Number of alerts: 15. Completed on 2023-07-10 10:01:04. - ACTION NEEDED.
+Scanned 2 addresses in 59.67 seconds. Number of alerts: 15. Completed on 2023-07-10 10:03:17. - ACTION NEEDED.
+Scanned 2 addresses in 56.0 seconds. Number of alerts: 15. Completed on 2023-07-10 13:11:07. - ACTION NEEDED.
+Scanned 2 addresses in 64.98 seconds. Number of alerts: 15. Completed on 2023-07-11 11:07:31. - ACTION NEEDED.
+Scanned 2 addresses in 55.94 seconds. Number of alerts: 15. Completed on 2023-07-11 13:59:49. - ACTION NEEDED.
+Scanned 2 addresses in 57.62 seconds. Number of alerts: 15. Completed on 2023-07-11 15:06:57. - ACTION NEEDED.
+Scanned 2 addresses in 57.7 seconds. Number of alerts: 15. Completed on 2023-07-11 17:20:06. - ACTION NEEDED.
+Scanned 2 addresses in 76.0 seconds. Number of alerts: 15. Completed on 2023-07-12 11:54:00. - ACTION NEEDED.
+Scanned 2 addresses in 70.9 seconds. Number of alerts: 15. Completed on 2023-07-12 12:01:49. - ACTION NEEDED.
+Scanned 2 addresses in 58.37 seconds. Number of alerts: 15. Completed on 2023-07-14 10:20:00. - ACTION NEEDED.
+Scanned 2 addresses in 58.24 seconds. Number of alerts: 15. Completed on 2023-07-14 11:16:21. - ACTION NEEDED.
+Scanned 2 addresses in 59.59 seconds. Number of alerts: 15. Completed on 2023-07-14 11:19:23. - ACTION NEEDED.
+Scanned 2 addresses in 54.11 seconds. Number of alerts: 15. Completed on 2023-07-14 12:48:56. - ACTION NEEDED.
+Scanned 2 addresses in 77.96 seconds. Number of alerts: 15. Completed on 2023-07-14 12:52:56. - ACTION NEEDED.
+Scanned 2 addresses in 59.79 seconds. Number of alerts: 15. Completed on 2023-07-14 13:07:46. - ACTION NEEDED.
+Scanned 2 addresses in 68.15 seconds. Number of alerts: 15. Completed on 2023-07-14 13:52:57.
+Scanned 2 addresses in 69.4 seconds. Number of alerts: 15. Completed on 2023-07-14 14:37:05.
+Scanned 2 addresses in 64.32 seconds. Number of alerts: 15. Completed on 2023-07-14 15:08:13.
+Scanned 2 addresses in 62.64 seconds. Number of alerts: 15. Completed on 2023-07-14 15:17:03.
+Scanned 2 addresses in 70.83 seconds. Number of alerts: 15. Completed on 2023-07-14 16:05:26.
+Scanned 1 addresses in 26.74 seconds. Number of alerts: 22. Completed on 2023-07-14 16:21:47.
+Scanned 1 addresses in 27.96 seconds. Number of alerts: 22. Completed on 2023-07-14 16:28:24.
+Scanned 1 addresses in 98.93 seconds. Number of alerts: 130. Completed on 2023-07-14 16:39:16.                                                                                                
+Scanned 2 addresses in 126.69 seconds. Number of alerts: 136. Completed on 2023-07-14 16:53:20.
+Scanned 2 addresses in 112.31 seconds. Number of alerts: 136. Completed on 2023-07-14 17:13:46.
+Scanned 1 addresses in 153.16 seconds. Number of alerts: 12. Completed on 2023-07-18 10:58:03.
+Scanned 1 addresses in 150.85 seconds. Number of alerts: 12. Completed on 2023-07-18 11:23:21.
+Scanned 1 addresses in 153.62 seconds. Number of alerts: 12. Completed on 2023-07-18 14:29:38.
+Scanned 1 addresses in 151.6 seconds. Number of alerts: 12. Completed on 2023-07-18 14:37:00.
+Scanned 1 addresses in 147.01 seconds. Number of alerts: 8. Completed on 2023-07-18 15:34:51.
+Scanned 1 addresses in 145.63 seconds. Number of alerts: 8. Completed on 2023-07-18 15:37:57.
+Scanned 1 addresses in 144.71 seconds. Number of alerts: 8. Completed on 2023-07-18 15:46:33.
+Scanned 2 addresses in 444.42 seconds. Number of alerts: 165. Completed on 2023-07-18 16:01:08. - ACTION NEEDED.
+Scanned 2 addresses in 367.65 seconds. Number of alerts: 165. Completed on 2023-07-18 16:12:06. - ACTION NEEDED.
+Scanned 2 addresses in 367.3 seconds. Number of alerts: 165. Completed on 2023-07-18 16:24:37. - ACTION NEEDED.
+Scanned 2 addresses in 384.14 seconds. Number of alerts: 165. Completed on 2023-07-19 11:13:11. - ACTION NEEDED.
+Scanned 2 addresses in 391.1 seconds. Number of alerts: 165. Completed on 2023-07-19 11:26:12. - ACTION NEEDED.
+Scanned 1 addresses in 252.29 seconds. Number of alerts: 157. Completed on 2023-07-19 11:50:54. - ACTION NEEDED.
+Scanned 2 addresses in 515.65 seconds. Number of alerts: 167. Completed on 2023-07-19 14:26:57. - ACTION NEEDED.
+Scanned 2 addresses in 378.88 seconds. Number of alerts: 167. Completed on 2023-07-19 14:50:06. - ACTION NEEDED.
+Scanned 2 addresses in 360.64 seconds. Number of alerts: 167. Completed on 2023-07-20 17:07:06. - ACTION NEEDED.
+Scanned 2 addresses in 378.85 seconds. Number of alerts: 167. Completed on 2023-07-20 17:14:08. - ACTION NEEDED.
