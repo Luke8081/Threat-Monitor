@@ -12,36 +12,38 @@ setInterval(function(){
     image.src = url + "?rand=" + Math.random()
 }, 7000)
 
-//Alerts the user if there is a high risk. 
-if ('<%= alerts.High_Alert %>' > 0){
-    //alert('ACTION NEEDED. Web server with high risk vulnerability found.')
-    stylesheet = document.styleSheets[0]
-    stylesheet.insertRule('.high_info_display {animation: blinking 1s infinite;}', 0)
-} else{
-    element = document.getElementsByClassName('high_info_display')
-    element[0].style.backgroundColor = 'darkgreen'
-}
+
 
 //Alerts the user when there is a medium risk
-if ('<%= alerts.Medium_Alert %>' > 10){
-    stylesheet = document.styleSheets[0]
-    stylesheet.insertRule('.medium_info_display {animation: blinking 1s infinite;}', 0)
-}else if ('<%= alerts.Medium_Alert %>' > 1){
-    element = document.getElementsByClassName('medium_info_display')
-    element[0].style.backgroundColor = 'orange'
-}else{
-    element = document.getElementsByClassName('medium_info_display')
-    element[0].style.backgroundColor = 'darkgreen'
-}
+function color_alerts(alerts){
+    //Alerts the user if there is a high risk. 
+    if (alerts.High_Alert > 0){
+        //alert('ACTION NEEDED. Web server with high risk vulnerability found.')
+        stylesheet = document.styleSheets[0]
+        stylesheet.insertRule('.high_info_display {animation: blinking 1s infinite;}', 0)
+    } else{
+        element = document.getElementsByClassName('high_info_display')
+        element[0].style.backgroundColor = 'darkgreen'
+    }
+    if (alerts.Medium_Alert > 10){
+        stylesheet = document.styleSheets[0]
+        stylesheet.insertRule('.medium_info_display {animation: blinking 1s infinite;}', 0)
+    }else if (alerts.Medium_Alert > 1){
+        element = document.getElementsByClassName('medium_info_display')
+        element[0].style.backgroundColor = 'orange'
+    }else{
+        element = document.getElementsByClassName('medium_info_display')
+        element[0].style.backgroundColor = 'darkgreen'
+    }
 
-if ('<%= alerts.Low_Alert %>' > 20){
-    element = document.getElementsByClassName('low_info_display')
-    element[0].style.backgroundColor = 'orange'
-} else{
-    element = document.getElementsByClassName('low_info_display')
-    element[0].style.backgroundColor = 'darkgreen'
+    if (alerts.Low_Alert > 20){
+        element = document.getElementsByClassName('low_info_display')
+        element[0].style.backgroundColor = 'orange'
+    } else{
+        element = document.getElementsByClassName('low_info_display')
+        element[0].style.backgroundColor = 'darkgreen'
+    }
 }
-
 //If user changes settings send them to server
 function change_settings(){
     let debug = document.getElementById('debug_mode').checked
@@ -213,6 +215,23 @@ function scan_log_click(){
     xhr.send()
 }
 
+function get_alerts(){
+    const xhr = new XMLHttpRequest();
+    xhr.open("GET", '/alerts', true);
+        xhr.setRequestHeader("Content-Type", "application/json");
+        xhr.onreadystatechange = function () {
+            if (xhr.responseText){
+                let alerts = JSON.parse(xhr.responseText)
+                document.getElementById('low_alert_text').innerText = 'Low alert: '+alerts.Low_Alert
+                document.getElementById('medium_alert_text').innerText = 'Medium alert: '+alerts.Medium_Alert
+                document.getElementById('high_alert_text').innerText = 'High alert: '+alerts.High_Alert
+
+                color_alerts(alerts)
+            }
+        }
+    xhr.send()
+}
+
 setInterval(function(){
     if (view == 'console'){
         update_console()
@@ -248,3 +267,5 @@ if (Math.abs(scrollHeight - clientHeight - scrollTop) < 1) {
     scroll_img.style.opacity = 0
 }
 });
+
+get_alerts()

@@ -227,7 +227,7 @@ class Assesment:
 
         dir_name = os.getcwd() + "/reports/"
 
-        file = open('scan_log.txt', 'a')
+        file = open('reports/scan_log.txt', 'a')
         file.write(msg)
         file.close()
     
@@ -412,9 +412,9 @@ cronitor.Monitor.put(
 def main():
     #Read addresses from file and store as list
     #raise Exception("This is a test")
-    addresses = open(f'{os.getcwd()}/addresses.txt', 'r').read().split('\n')
+    addresses = open(f'{os.getcwd()}/config/addresses.txt', 'r').read().split('\n')
     #Read json file and turn it into a disctonary 
-    config_file = open(f'{os.getcwd()}/config.json', 'r').read()
+    config_file = open(f'{os.getcwd()}/config/config.json', 'r').read()
     config = json.loads(config_file)
     test = Assesment(addresses, verbose=(config['verbose'] == 'true'), send_email=(config['email']=='true'), debug=(config['debug']=='true'), spider=(config['spider']=='true'), save_reports=(config['save_reports']=='true'), scan_type=(config['scan_type']=='true'))
     test.run_Assesment()

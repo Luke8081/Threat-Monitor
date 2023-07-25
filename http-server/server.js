@@ -5,6 +5,7 @@ const router = express.Router()
 const { exec } = require('child_process');
 const { type } = require('os');
 const sqlite = require('sqlite3').verbose()
+const readline = require('readline');
 
 var app = express();
 
@@ -28,13 +29,13 @@ function check_DIR(){
 function write_config(json){
     check_DIR()
     let data = JSON.stringify(json);
-    console.log(process.cwd()+'/config.json')
-    fs.writeFileSync(process.cwd()+'/config.json', data)
+    console.log(process.cwd()+'/config/config.json')
+    fs.writeFileSync(process.cwd()+'/config/config.json', data)
 }
 
 function read_config(){
     check_DIR()
-    let rawdata = fs.readFileSync(process.cwd()+'/config.json');
+    let rawdata = fs.readFileSync(process.cwd()+'/config/config.json');
     let json = JSON.parse(rawdata);
     return json
 }
@@ -104,14 +105,17 @@ async function get_scanned_addresses(){
     return result
 }
 
-app.get('/', async function(req, res) {
+app.get('/alerts', async function(req, res){
+    const alerts = await get_alerts()
+    res.setHeader('Content-Type', 'application/json');
+    res.send(JSON.stringify(alerts))
+})
+
+app.get('/', function(req, res) {
     check_DIR()
 
     var API_key = process.env.CRONITOR_API_KEY
-    const alerts = await get_alerts()
-    console.log(alerts)
-
-    res.render("home", {alerts: alerts})
+    res.render("home")
 });
 
 app.get('/addresses', async function(req, res) {
@@ -201,7 +205,7 @@ app.get('/console', function(req,res){
 
 app.get('/address_list', function(req,res){
     check_DIR()
-    let data = fs.readFileSync(process.cwd()+'/addresses.txt');
+    let data = fs.readFileSync(process.cwd()+'/config/addresses.txt');
     res.send(data)
 })
 
@@ -209,7 +213,7 @@ app.post('/edit_addresses', function(req, res){
     check_DIR()
     let data = req.body['addresses']
     try{
-        fs.writeFileSync(process.cwd()+'/addresses.txt', data);
+        fs.writeFileSync(process.cwd()+'/config/addresses.txt', data);
         res.sendStatus(200)
     }catch(err){
         console.error(err)
@@ -218,9 +222,35 @@ app.post('/edit_addresses', function(req, res){
 })
 app.get('/scan_log', function(req, res){
     check_DIR()
-    let data = fs.readFileSync(process.cwd()+'/scan_log.txt');
-    console_text += data
-    res.send(data)
+    if (Object.keys(req.query).length === 0){
+        let data = fs.readFileSync(process.cwd()+'/reports/scan_log.txt');
+        console_text += data
+        res.send(data)
+    }else if (req.query.recent){
+
+        const rl = readline.createInterface({
+            input: fs.createReadStream(process.cwd()+'/reports/scan_log.txt'),
+            crlfDelay: Infinity
+        });
+
+        let last5Rows = []
+        rl.on('line', (line) => {
+            last5Rows.push(line);
+            if (last5Rows.length > 5) {
+              last5Rows.shift(); // Remove the first element when the array has more than 5 elements
+            }
+        })
+        rl.on('close', () => {
+            console.log('Last 5 rows:');
+            console.log(last5Rows)
+            let separatorIndex = last5Rows.indexOf('Number')
+            console.log(separatorIndex)
+            const data = last5Rows.slice(separatorIndex + 1)
+            console.log(data)
+
+        })
+        
+    } 
 })
 
 app.listen(8085, '127.0.0.1')
