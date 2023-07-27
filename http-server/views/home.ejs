@@ -2,6 +2,7 @@
 <html>
    <head>
       <link rel="stylesheet" type="text/css" href="css/home.css" />
+      <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
       <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-9ndCyUaIbzAi2FUVXJi0CjmCapSmO7SnpJef0486qhLnuZ2cdeRhO02iuK6FUUVM" crossorigin="anonymous">
       <meta charset="utf-8">
       <title>Scanner Dashboard</title>
@@ -34,7 +35,7 @@
 
    <div class="col-6">
       <div class="image-container">
-         <img id="status" src="" width="350" height="100">
+         <img id="status" src="">
       </div>
       <div class="settings-container">
          <p class="settings-title">Settings</p>
@@ -91,6 +92,11 @@
    </div>
    </div>
    <div class="row">
+      <div class="page_down_img_container">
+         <img id='page_down_img' class='page_down_img' onclick='scroll_down_page()' src="/images/page-down.png" height="200" width="120">
+      </div>
+   </div>
+   <div class="row">
       <div class="col-4">
          <div class="high_info_display" onclick="test()">
             <h1 id="high_alert_text">High alert:</h1>
@@ -110,15 +116,18 @@
    <div class="row">
       <div class="col-6">
          <div class="vuln_container">
-            <h2>Recent scans: </h2>
+            <h2>Execution time: </h2>
+            <canvas id="execution_time_canvas" width="400" height="200"></canvas>
          </div>
       </div>
       <div class="col-6">
          <div class="sql_vuln_container">
-            <h2>Alerts </h2>
+            <h2>Alerts: </h2>
+            <canvas id="alerts_over_time" width="400" height="200"></canvas>
          </div>
       </div>
    </div>
+   <%- include ('./partials/footer'); %>
 </body>
 
 <script src="javascript/home.js"></script>

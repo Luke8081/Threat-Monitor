@@ -1,8 +1,31 @@
-img {
+.scroll_down_image {
     max-width: 100%;
     height: auto;
     width: auto\9;
  }
+ .page_down_img{
+   position: fixed;
+   bottom: 4%;
+   left:50%;
+   margin-top: 2%;
+   transition: ease 1s;
+   animation: mover 3s 3  alternate-reverse;
+ }
+ .page_down_img:hover{
+   cursor: pointer;
+   -webkit-animation: mover 1s infinite  alternate;
+   animation: mover 1s infinite  alternate;
+ }
+
+ .page_down_img_container{
+   padding-bottom: 5%;
+ }
+
+#status{
+   height: 50%;
+   width: 55%;
+}
+
  .blink, .high_info_display, .medium_info_display, .low_info_display{
     text-align: center;
     margin: 10%;
@@ -80,7 +103,7 @@ img {
     height: 34px;
     margin-left:auto;
     margin-top: 1%;
-    margin-right: 3%;
+    margin-right: auto;
  }
  
  .scan_type_switch input{
@@ -222,7 +245,7 @@ img {
     background-color: #2e3683;
     border-radius: 30px;
     margin-left: 30%;
-    margin-top: 2%;
+    margin-top: 4%;
  }
  
  
@@ -235,6 +258,7 @@ img {
     padding-bottom: 1%;
     width: 90%;
     margin-left: 15%;
+    margin-top: 7%;
  }
  
  .output-nav{
@@ -375,7 +399,7 @@ img {
  
  .image-container{
     margin-left: 35%;
-    margin-top: 6%;
+    margin-top: 8%;
  }
  
  .scroll_down_image{

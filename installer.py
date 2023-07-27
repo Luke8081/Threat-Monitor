@@ -38,6 +38,11 @@ def set_database():
             Medium_Alert    INT     NOT NULL,
             High_Alert      INT     NOT NULL,
             Date            DATE    NOT NULL);''')
+
+    conn.execute('''CREATE TABLE IF NOT EXISTS execution_time
+            (Date           DATE   NOT NULL,
+            Time           REAL    NOT NULL);''')
+
     conn.close()
 
 def banner():
@@ -57,7 +62,6 @@ def setup_http_server():
     os.system('npm install express sqlite3')
     os.system('npm install')
     os.chdir("../")
-
 
 
 if __name__ == "__main__":

@@ -1,0 +1,28 @@
+footer{
+    position: relative;
+    left:0;
+    bottom: 0;
+    width: 100%;
+    padding: 1.5%;
+    background-color: rgb(28, 81, 180);
+    margin-bottom: -10;
+    margin-top: 10%;
+    text-align: center;
+}
+
+.logos{
+    position: absolute;
+    float: left;
+    margin-left: 3%;
+}
+
+.coda_logo{
+    width: 180px;
+    height: 120px;
+}
+
+.github_logo{
+    position: absolute;
+    float: right;
+    margin-right: 3%;
+}

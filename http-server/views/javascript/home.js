@@ -232,6 +232,12 @@ function get_alerts(){
     xhr.send()
 }
 
+//Scrolls the user down so other elements are within view
+function scroll_down_page(){
+    const scroll = document.documentElement.scrollHeight - window.innerHeight - 150
+    window.scrollTo(0, scroll)
+}
+
 setInterval(function(){
     if (view == 'console'){
         update_console()
@@ -254,18 +260,120 @@ console_click()
 document.getElementById("output-msg").style.visibility = 'hidden'
 
 const scroll_img = document.getElementById("scroll_down_image")
+const page_down_img = document.getElementById('page_down_img')
 scroll_img.style.opacity = 0
+page_down_img.style.opacity = 100
 
 //Make scroll button appear and dissapear based on users scroll on the page
 document.getElementById('output-text').addEventListener('scroll', event => {
-const {scrollHeight, scrollTop, clientHeight} = event.target;
+    const {scrollHeight, scrollTop, clientHeight} = event.target;
 
-if (Math.abs(scrollHeight - clientHeight - scrollTop) > 1) {
-    scroll_img.style.opacity = 100
-}
-if (Math.abs(scrollHeight - clientHeight - scrollTop) < 1) {
-    scroll_img.style.opacity = 0
-}
+    if (Math.abs(scrollHeight - clientHeight - scrollTop) > 1) {
+        scroll_img.style.opacity = 100
+    }
+    if (Math.abs(scrollHeight - clientHeight - scrollTop) < 1) {
+        scroll_img.style.opacity = 0
+    }
 });
+
+//Make the page down button dissapear when user scrolls down and appear 
+//when at the top
+window.addEventListener('scroll', event => {
+    const scrollTop = window.scrollY || document.documentElement.scrollTop
+
+    if (scrollTop < 250){
+        page_down_img.style.opacity = 100
+    }else{
+        page_down_img.style.opacity = 0
+    }
+});
+/*
+document.addEventListener("DOMContentLoaded", function() {
+    console.log('draw')
+    // Sample data (replace with your own data)
+    var data = {
+      labels: ["January", "February", "March", "April", "May", "June", "July"],
+      datasets: [{
+        label: "Monthly Sales",
+        data: [1200, 1500, 800, 1800, 1300, 2000, 1700],
+        backgroundColor: "rgba(75, 192, 192, 0.2)", // Optional: Background color of the data points
+        borderColor: "rgba(75, 192, 192, 1)", // Optional: Border color of the data points
+        borderWidth: 1 // Optional: Border width of the data points
+      }]
+    };
+  
+    // Chart configuration
+    var options = {
+      responsive: true, // Make the chart responsive
+      maintainAspectRatio: false, // Preserve aspect ratio
+      scales: {
+        y: {
+          beginAtZero: true // Start the y-axis at zero
+        }
+      }
+    };
+  
+    // Create the chart
+    var ctx = document.getElementById("execution_time_canvas").getContext("2d");
+    var myChart = new Chart(ctx, {
+      type: "bar", // Specify the chart type (e.g., bar, line, pie, etc.)
+      data: data,
+      options: options
+    });
+  });
+*/
+document.addEventListener("DOMContentLoaded", function() {
+    //Chart 1
+    let ctx = document.getElementById('execution_time_canvas');
+    console.log('drawing')
+    new Chart(ctx, {
+    type: 'line',
+    data: {
+        labels: ["January", "February", "March", "April", "May", "June", "July"],
+        datasets: [{
+        label: 'Sales',
+        data: [1200, 1500, 800, 1800, 1300, 2000, 1700],
+        backgroundColor: "rgba(255,255,255)", // Optional: Background color of the data points
+        borderColor: "rgba(255,255,255)", // Optional: Border color of the data points
+        borderWidth: 1
+        }]
+    },
+    options: {
+        responsive: true, // Make the chart responsive
+        scales: {
+        y: {
+            beginAtZero: true
+        }
+        }
+    }
+    });
+
+
+    //Chart 2
+    ctx = document.getElementById('alerts_over_time');
+    console.log('drawing')
+    new Chart(ctx, {
+    type: 'line',
+    data: {
+        labels: ["January", "February", "March", "April", "May", "June", "July"],
+        datasets: [{
+        label: 'Sales',
+        data: [1200, 1500, 800, 1800, 1300, 2000, 1700],
+        backgroundColor: "rgba(255,255,255)", // Optional: Background color of the data points
+        borderColor: "rgba(255,255,255)", // Optional: Border color of the data points
+        borderWidth: 1
+        }]
+    },
+    options: {
+        responsive: true, // Make the chart responsive
+        scales: {
+        y: {
+            beginAtZero: true
+        }
+        }
+    }
+    });
+})
+
 
 get_alerts()

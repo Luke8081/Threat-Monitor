@@ -213,6 +213,8 @@ class Assesment:
         self.time = round(stop_timer - start_timer, 2)
     
     def log(self):
+        #Save scan to database
+        self.save_scan_database()
 
         #Check that assesment has been run before trying to log
         if hasattr(self, 'time') == False:
@@ -327,16 +329,12 @@ class Assesment:
         #Store the reults to the database. If the address already exists then update the results
         cursor.execute('SELECT Address FROM alert_Summary WHERE Address = ?', (address,))
         exists_row = cursor.fetchone()
-
-        print(exists_row)
         
         if exists_row is None:
-            print('adding new')
             sql = f'''INSERT INTO alert_Summary('Address','Low_Alert', 'Medium_Alert', 'High_Alert', 'Date')
             VALUES(?,?,?,?,?)'''
         else:
             params = (self.low_Alert, self.medium_Alert, self.high_Alert, self.date, address)
-            print('Updating')
             sql = '''UPDATE alert_Summary SET Low_Alert = ?, Medium_Alert = ?, High_Alert = ?, Date = ? WHERE Address = ?'''
         
 
@@ -353,8 +351,18 @@ class Assesment:
 
         if self.debug:
             print('Results successfully stored to database')
-           
-
+    
+    #Save the execution time and date to database
+    def save_scan_database(self){
+        conn = sqlite3.connect("reports/database.db")
+        cursor = conn.cursor()
+        params = (self.time, self.date)
+        sql = f'''INSERT INTO execution_time('Date', 'Time')
+            VALUES(?,?)'''
+        cursor.execute(sql, params)
+        self.conn.commit()
+        self.conn.close()
+    }
         
 
     
