@@ -287,71 +287,56 @@ window.addEventListener('scroll', event => {
         page_down_img.style.opacity = 0
     }
 });
-/*
+
+
 document.addEventListener("DOMContentLoaded", function() {
-    console.log('draw')
-    // Sample data (replace with your own data)
-    var data = {
-      labels: ["January", "February", "March", "April", "May", "June", "July"],
-      datasets: [{
-        label: "Monthly Sales",
-        data: [1200, 1500, 800, 1800, 1300, 2000, 1700],
-        backgroundColor: "rgba(75, 192, 192, 0.2)", // Optional: Background color of the data points
-        borderColor: "rgba(75, 192, 192, 1)", // Optional: Border color of the data points
-        borderWidth: 1 // Optional: Border width of the data points
-      }]
-    };
-  
-    // Chart configuration
-    var options = {
-      responsive: true, // Make the chart responsive
-      maintainAspectRatio: false, // Preserve aspect ratio
-      scales: {
-        y: {
-          beginAtZero: true // Start the y-axis at zero
-        }
-      }
-    };
-  
-    // Create the chart
-    var ctx = document.getElementById("execution_time_canvas").getContext("2d");
-    var myChart = new Chart(ctx, {
-      type: "bar", // Specify the chart type (e.g., bar, line, pie, etc.)
-      data: data,
-      options: options
-    });
-  });
-*/
-document.addEventListener("DOMContentLoaded", function() {
-    //Chart 1
-    let ctx = document.getElementById('execution_time_canvas');
-    console.log('drawing')
-    new Chart(ctx, {
-    type: 'line',
-    data: {
-        labels: ["January", "February", "March", "April", "May", "June", "July"],
-        datasets: [{
-        label: 'Sales',
-        data: [1200, 1500, 800, 1800, 1300, 2000, 1700],
-        backgroundColor: "rgba(255,255,255)", // Optional: Background color of the data points
-        borderColor: "rgba(255,255,255)", // Optional: Border color of the data points
-        borderWidth: 1
-        }]
-    },
-    options: {
+
+    //Configuration for charts
+    const options = {
         responsive: true, // Make the chart responsive
         scales: {
-        y: {
-            beginAtZero: true
-        }
+            y: {
+                beginAtZero: true,
+                grid: {
+                    color: "rgba(255, 255, 255, 0.25)"
+                },
+                ticks: {
+                    color: "white"
+                }
+            },
+            x: {
+                grid: {
+                    color: "rgba(255, 255, 255, 0.25)"
+                },
+                ticks: {
+                    color: "white"
+                }
+            }
         }
     }
+
+
+    //Chart 1
+    let ctx = document.getElementById('execution_time_canvas');
+    new Chart(ctx, {
+        type: 'line',
+        data: {
+            labels: ["January", "February", "March", "April", "May", "June", "July"],
+            datasets: [{
+            label: 'Sales',
+            data: [1200, 1500, 800, 1800, 1300, 2000, 1700],
+            backgroundColor: "rgba(255,255,255)", // Optional: Background color of the data points
+            borderColor: "rgba(18, 175, 225, 0.8)", // Optional: Border color of the data points
+            color: "#36A2EB",
+            borderWidth: 2
+            }]
+        },
+        options: options,
     });
 
 
     //Chart 2
     ctx = document.getElementById('alerts_over_time');
-    console.log('drawing')
     new Chart(ctx, {
     type: 'line',
     data: {
@@ -364,14 +349,7 @@ document.addEventListener("DOMContentLoaded", function() {
         borderWidth: 1
         }]
     },
-    options: {
-        responsive: true, // Make the chart responsive
-        scales: {
-        y: {
-            beginAtZero: true
-        }
-        }
-    }
+    options: options,
     });
 })
 

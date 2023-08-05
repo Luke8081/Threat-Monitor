@@ -47,6 +47,8 @@ class Assesment:
         #If it is shut it down. There could ne multiple zap servers running.
         #They all need to be shut down to make sure port 8080 is open
         zap_proxy_state = Assesment.test_Zap(debug=self.debug, test_once=True)
+        if zap_proxy_state and self.verbose:
+            print("Zap server already online. Shutting server down")
         while zap_proxy_state:
             headers = {
             'Accept': 'application/json',
@@ -56,10 +58,9 @@ class Assesment:
             if response.json()['Result'] != "OK":
                 raise Exception("Failed to shutdown Zap server.", response.json())
             time.sleep(5)
+            if self.debug:
+                print('Waiting for shutdown')
             zap_proxy_state = Assesment.test_Zap(debug=self.debug, test_once=True)
-
-        if zap_proxy_state and self.verbose:
-            print("Zap server already online. Shutting server down")
 
         #Creates thread to start zap in the background. Needs to be on another thread to run
         if self.verbose:
@@ -126,7 +127,7 @@ class Assesment:
             depth = 1
         else:
             #change this to adjust scan depth
-            depth = 7
+            depth = 3
 
         headers = {
         'Accept': 'application/json',
@@ -353,16 +354,21 @@ class Assesment:
             print('Results successfully stored to database')
     
     #Save the execution time and date to database
-    def save_scan_database(self){
+    def save_scan_database(self):
+        if self.debug:
+            print('Writing excution date and time to database')
+
         conn = sqlite3.connect("reports/database.db")
         cursor = conn.cursor()
+
         params = (self.time, self.date)
         sql = f'''INSERT INTO execution_time('Date', 'Time')
             VALUES(?,?)'''
+            
         cursor.execute(sql, params)
         self.conn.commit()
         self.conn.close()
-    }
+    
         
 
     

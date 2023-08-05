@@ -64,6 +64,7 @@ def setup_http_server():
     os.chdir("../")
 
 
+
 if __name__ == "__main__":
     #Checks the user is root. If they are asks if they want to download the zap server
     if os.geteuid()==0:
