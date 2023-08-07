@@ -98,6 +98,15 @@ async function get_alerts(){
     }
 }
 
+async function get_execution_times(){
+    //SELECT * FROM execution_time ORDER BY Date LIMIT 7
+    let database = await db_all('SELECT * FROM execution_time')
+    return{
+        Date: database[0].Date,
+        Time: database[0].Time
+    }
+}
+
 async function get_scanned_addresses(){
     let sql = "SELECT Address FROM alert_Summary"
     let addresses = await db_all(sql)
@@ -220,7 +229,8 @@ app.post('/edit_addresses', function(req, res){
         res.sendStatus(500)
     }
 })
-app.get('/scan_log', function(req, res){
+app.get('/scan_log', async function(req, res){
+    //http://127.0.0.1:8085/scan_log?recent=recent
     check_DIR()
     if (Object.keys(req.query).length === 0){
         let data = fs.readFileSync(process.cwd()+'/reports/scan_log.txt');
@@ -228,6 +238,10 @@ app.get('/scan_log', function(req, res){
         res.send(data)
     }else if (req.query.recent){
 
+        let data = await get_execution_times()
+        console.log(data)
+
+        /*
         const rl = readline.createInterface({
             input: fs.createReadStream(process.cwd()+'/reports/scan_log.txt'),
             crlfDelay: Infinity
@@ -249,6 +263,8 @@ app.get('/scan_log', function(req, res){
             console.log(data)
 
         })
+        */
+
         
     } 
 })

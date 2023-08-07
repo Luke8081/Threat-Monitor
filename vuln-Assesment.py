@@ -355,13 +355,15 @@ class Assesment:
     
     #Save the execution time and date to database
     def save_scan_database(self):
+        self.conn = sqlite3.connect("reports/database.db")
+        cursor = self.conn.cursor()
         if self.debug:
             print('Writing excution date and time to database')
 
         conn = sqlite3.connect("reports/database.db")
         cursor = conn.cursor()
 
-        params = (self.time, self.date)
+        params = (self.date_time, self.time)
         sql = f'''INSERT INTO execution_time('Date', 'Time')
             VALUES(?,?)'''
             
