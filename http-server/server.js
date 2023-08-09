@@ -99,12 +99,13 @@ async function get_alerts(){
 }
 
 async function get_execution_times(){
-    //SELECT * FROM execution_time ORDER BY Date LIMIT 7
-    let database = await db_all('SELECT * FROM execution_time')
-    return{
-        Date: database[0].Date,
-        Time: database[0].Time
-    }
+    let database = await db_all('SELECT Date, Time FROM execution_time ORDER BY Date DESC LIMIT 7')
+    return database
+}
+
+async function get_alert_count(){
+    let database = await db_all('SELECT Date, Alert FROM execution_time ORDER BY Date DESC LIMIT 7')
+    return database
 }
 
 async function get_scanned_addresses(){
@@ -167,10 +168,11 @@ app.get('/address_report', async function(req, res){
 
     //Get the report for address
     let recent_date = get_recent_date(address)
+    const footer = fs.readFileSync(process.cwd()+'/http-server/views/partials/footer.ejs', 'utf8');
     const nav_bar = fs.readFileSync(process.cwd()+'/http-server/views/partials/nav.ejs', 'utf8');
     const address_report = fs.readFileSync(process.cwd()+'/reports/'+address+'/'+recent_date, 'utf8');
     res.set('Content-Type', 'text/html');
-    res.send(Buffer.from(nav_bar+address_report));
+    res.send(Buffer.from(nav_bar+address_report+footer));
 })
 
 app.get('/address_report_history', function(req, res){
@@ -179,9 +181,10 @@ app.get('/address_report_history', function(req, res){
     if (Object.keys(req.query).length == 2){
         let date = req.query.date
         const nav_bar = fs.readFileSync(process.cwd()+'/http-server/views/partials/nav.ejs', 'utf8');
+        const footer = fs.readFileSync(process.cwd()+'/http-server/views/partials/footer.ejs', 'utf8');
         const address_report = fs.readFileSync(process.cwd()+'/reports/'+address+'/'+date+'.html', 'utf8');
         res.set('Content-Type', 'text/html');
-        res.send(Buffer.from(nav_bar+address_report));
+        res.send(Buffer.from(nav_bar+address_report+footer));
     }else{
         console.log('Get report history')
         //http://127.0.0.1:8085/address_report_history?address=public-firing-range.appspot.com
@@ -236,37 +239,18 @@ app.get('/scan_log', async function(req, res){
         let data = fs.readFileSync(process.cwd()+'/reports/scan_log.txt');
         console_text += data
         res.send(data)
-    }else if (req.query.recent){
+    }else if (req.query.execution){
 
         let data = await get_execution_times()
-        console.log(data)
+        res.setHeader('Content-Type', 'application/json');
+        res.send(JSON.stringify(data))
 
-        /*
-        const rl = readline.createInterface({
-            input: fs.createReadStream(process.cwd()+'/reports/scan_log.txt'),
-            crlfDelay: Infinity
-        });
+    }else if (req.query.alert){
 
-        let last5Rows = []
-        rl.on('line', (line) => {
-            last5Rows.push(line);
-            if (last5Rows.length > 5) {
-              last5Rows.shift(); // Remove the first element when the array has more than 5 elements
-            }
-        })
-        rl.on('close', () => {
-            console.log('Last 5 rows:');
-            console.log(last5Rows)
-            let separatorIndex = last5Rows.indexOf('Number')
-            console.log(separatorIndex)
-            const data = last5Rows.slice(separatorIndex + 1)
-            console.log(data)
-
-        })
-        */
-
-        
-    } 
+        const data = await get_alert_count()
+        res.setHeader('Content-Type', 'application/json');
+        res.send(JSON.stringify(data))
+    }
 })
 
 app.listen(8085, '127.0.0.1')

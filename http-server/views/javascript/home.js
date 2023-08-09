@@ -1,5 +1,7 @@
 //Needed for showing user different views
 var view = 'console'
+var execution_chart
+var alert_chart
 
 //Updates image every 10 seconds. Needs to be random element to stop browser reusing image in cache
 const url = "https://cronitor.io/badges/uKVpG4/production/iVvSLth_Vq5UwQMd0yDkm40Ivjg.svg"
@@ -123,12 +125,23 @@ function console_click(){
 
 function update_console(){
     const xhr = new XMLHttpRequest();
+    let console_text = document.getElementById('output-text').value
+
     xhr.open("GET", '/console', true);
         xhr.setRequestHeader("Content-Type", "application/json");
         xhr.onreadystatechange = function () {
-        if (xhr.readyState === 4 && xhr.status === 200) {
-            document.getElementById('output-text').value = xhr.responseText
-        };
+            if (xhr.readyState === 4 && xhr.status === 200) {
+                const response = xhr.responseText
+
+                //Update graphs when a scan is finished
+                if (console_text.localeCompare(response) == true){
+                    get_execution_graph_data()
+                    get_alert_graph_data()
+                }
+
+
+                document.getElementById('output-text').value = xhr.responseText
+            };
     }
     xhr.send()
 }
@@ -203,14 +216,15 @@ function scroll_textArea_down(){
 
 
 
+
 function scan_log_click(){
     const xhr = new XMLHttpRequest();
     const textarea = document.getElementById('output-text')
     xhr.open("GET", '/scan_log', true);
         xhr.setRequestHeader("Content-Type", "application/json");
         xhr.onreadystatechange = function () {
-        textarea.value += xhr.responseText
-        scroll_textArea_down()
+            textarea.value += xhr.responseText
+            scroll_textArea_down()
         }
     xhr.send()
 }
@@ -289,68 +303,175 @@ window.addEventListener('scroll', event => {
 });
 
 
-document.addEventListener("DOMContentLoaded", function() {
+function get_execution_graph_data(){
+    const xhr = new XMLHttpRequest();
+    xhr.open("GET", '/scan_log?execution=execution', true);
+        xhr.setRequestHeader("Content-Type", "application/json");
+        xhr.onreadystatechange = function () {
+            if (xhr.readyState === 4 && xhr.status === 200) {
 
-    //Configuration for charts
-    const options = {
-        responsive: true, // Make the chart responsive
-        scales: {
-            y: {
-                beginAtZero: true,
-                grid: {
-                    color: "rgba(255, 255, 255, 0.25)"
-                },
-                ticks: {
-                    color: "white"
+                let graph_data = JSON.parse(xhr.responseText)
+                let dates = []
+                let data = []
+
+                for (let i = 0; i < graph_data.length; i++ ){
+                    dates.push(graph_data[i].Date)
+                    data.push(graph_data[i].Time)
+                }
+                console.log(dates)
+                dates.reverse()
+                data.reverse()
+
+                create_graph_execution_time(dates, data)
+            }
+        }
+    xhr.send()
+}
+
+function get_alert_graph_data(){
+    const xhr = new XMLHttpRequest();
+    xhr.open("GET", '/scan_log?alert=alert', true);
+        xhr.setRequestHeader("Content-Type", "application/json");
+        xhr.onreadystatechange = function () {
+            if (xhr.readyState === 4 && xhr.status === 200) {
+
+                let graph_data = JSON.parse(xhr.responseText)
+                let dates = []
+                let data = []
+
+                for (let i = 0; i < graph_data.length; i++ ){
+                    dates.push(graph_data[i].Date)
+                    data.push(graph_data[i].Alert)
+                }
+                dates.reverse()
+                data.reverse()
+
+                create_graph_alert(dates, data)
+            }
+        }
+    xhr.send()
+}
+const graph_options = {
+    responsive: true, 
+    scales: {
+        y: {
+            beginAtZero: true,
+            grid: {
+                color: "rgba(255, 255, 255, 0.25)"
+            },
+            ticks: {
+                color: "white",
+                font: {
+                    size: 10, 
+                    weight: "normal"
                 }
             },
-            x: {
-                grid: {
-                    color: "rgba(255, 255, 255, 0.25)"
-                },
-                ticks: {
-                    color: "white"
+            title: {
+                display: true,
+                text: 'Seconds',
+                color: "white",
+                font: {
+                    size: 14, 
+                    weight: "bold"
+                }
+            }
+        },
+        x: {
+            grid: {
+                color: "rgba(255, 255, 255, 0.25)"
+            },
+            ticks: {
+                color: "white",
+                font: {
+                    size: 10, 
+                    weight: "normal"
+                }
+            },
+            title: {
+                display: true,
+                text: 'Date & Time',
+                color: "white",
+                font: {
+                    size: 14, 
+                    weight: "bold"
+                }
+            }
+
+        }
+    },
+    plugins: {
+        legend: {
+            labels: {
+                font: {
+                    size: 25
                 }
             }
         }
     }
+    
+}
 
 
-    //Chart 1
-    let ctx = document.getElementById('execution_time_canvas');
-    new Chart(ctx, {
+
+function create_graph_alert(dates, data){
+    
+    //Alert count graphs
+    ctx = document.getElementById('alerts_over_time')
+
+    if (typeof alert_chart === 'object'){
+        alert_chart.destroy()
+    }
+
+    let alert_options = graph_options
+    alert_options.scales.y.title.text = 'Alerts'
+
+    alert_chart = new Chart(ctx, {
         type: 'line',
         data: {
-            labels: ["January", "February", "March", "April", "May", "June", "July"],
+            labels: dates,
             datasets: [{
-            label: 'Sales',
-            data: [1200, 1500, 800, 1800, 1300, 2000, 1700],
-            backgroundColor: "rgba(255,255,255)", // Optional: Background color of the data points
-            borderColor: "rgba(18, 175, 225, 0.8)", // Optional: Border color of the data points
+            label: 'Alerts',
+            data: data,
+            backgroundColor: "rgba(255,255,255)", 
+            borderColor: "rgba(18, 175, 225, 0.8)", 
             color: "#36A2EB",
             borderWidth: 2
             }]
         },
-        options: options,
+        options: alert_options,
     });
+}
+
+function create_graph_execution_time(dates, data){
+    console.log('creating')
+    //Execution time chart
+    let ctx = document.getElementById('execution_time_canvas');
+
+    if (typeof execution_chart === 'object'){
+        execution_chart.destroy()
+    }
+
+    execution_chart = new Chart(ctx, {
+        type: 'line',
+        data: {
+            labels: dates,
+            datasets: [{
+            label: 'Execution Time',
+            data: data,
+            backgroundColor: "rgba(255,255,255)", 
+            borderColor: "rgba(18, 175, 225, 0.8)", 
+            color: "#36A2EB",
+            borderWidth: 2
+            }]
+        },
+        options: graph_options,
+    });
+}
 
 
-    //Chart 2
-    ctx = document.getElementById('alerts_over_time');
-    new Chart(ctx, {
-    type: 'line',
-    data: {
-        labels: ["January", "February", "March", "April", "May", "June", "July"],
-        datasets: [{
-        label: 'Sales',
-        data: [1200, 1500, 800, 1800, 1300, 2000, 1700],
-        backgroundColor: "rgba(255,255,255)", // Optional: Background color of the data points
-        borderColor: "rgba(255,255,255)", // Optional: Border color of the data points
-        borderWidth: 1
-        }]
-    },
-    options: options,
-    });
+document.addEventListener("DOMContentLoaded", function() {
+    get_execution_graph_data()
+    get_alert_graph_data()
 })
 
 

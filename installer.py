@@ -20,6 +20,7 @@ def make_env_file():
     print(f"File saved to: {os.getcwd()}/.env")
 
 def install_Zap():
+    os.system("sudo apt install default-jre")
     #Installs zap. Then runs file
     os.system("wget -O zap_installer.sh https://github.com/zaproxy/zaproxy/releases/download/v2.13.0/ZAP_2_13_0_unix.sh && chmod +x zap_installer.sh && ./zap_installer.sh")
 
@@ -41,7 +42,8 @@ def set_database():
 
     conn.execute('''CREATE TABLE IF NOT EXISTS execution_time
             (Date           DATE   NOT NULL,
-            Time           REAL    NOT NULL);''')
+            Time           REAL    NOT NULL),
+            Alert           INT    NOT NULL;''')
 
     conn.close()
 
@@ -62,7 +64,6 @@ def setup_http_server():
     os.system('npm install express sqlite3')
     os.system('npm install')
     os.chdir("../")
-
 
 
 if __name__ == "__main__":

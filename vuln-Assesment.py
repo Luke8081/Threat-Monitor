@@ -227,6 +227,7 @@ class Assesment:
             msg = msg + " - ACTION NEEDED."
 
         print(msg)
+        print('Completed')
 
         dir_name = os.getcwd() + "/reports/"
 
@@ -352,24 +353,24 @@ class Assesment:
 
         if self.debug:
             print('Results successfully stored to database')
-    
+                
     #Save the execution time and date to database
     def save_scan_database(self):
-        self.conn = sqlite3.connect("reports/database.db")
-        cursor = self.conn.cursor()
+        conn = sqlite3.connect("reports/database.db")
+        cursor = conn.cursor()
         if self.debug:
             print('Writing excution date and time to database')
 
         conn = sqlite3.connect("reports/database.db")
         cursor = conn.cursor()
 
-        params = (self.date_time, self.time)
-        sql = f'''INSERT INTO execution_time('Date', 'Time')
-            VALUES(?,?)'''
+        params = (self.date_time, self.time, self.alert_count)
+        sql = f'''INSERT INTO execution_time('Date', 'Time', 'Alert')
+            VALUES(?,?,?)'''
             
         cursor.execute(sql, params)
-        self.conn.commit()
-        self.conn.close()
+        conn.commit()
+        conn.close()
     
         
 
