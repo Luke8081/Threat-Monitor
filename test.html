@@ -1,0 +1,43 @@
+<!DOCTYPE html>
+<head>
+<title>ZAP API UI</title>
+<script src="/script.js/?v=2&apinonce=5fefacc7b11252fa" type="text/javascript"></script>
+</head>
+<body>
+<h1><a href="/UI/">ZAP API UI</a></h1>
+<h2><a href="/UI/reports/">Component: reports</a></h2>
+<h3>Action: generate</h3>
+Generate a report with the supplied parameters.
+<form id="zapform" name="zapform" action="override"><table>
+<tr><td>Output Format</td><td>
+<select id="zapapiformat">
+<option value="JSON">JSON</option>
+<option value="JSONP" disabled>JSONP</option>
+<option value="HTML">HTML</option>
+<option value="XML">XML</option>
+</select>
+</td><td></td></tr>
+<tr><td>apikey*</td><td><input id="apikey" name="apikey" value=""/></td><td></td></tr>
+<tr><td>Form Method</td><td><select id="formMethod">
+<option value="GET" selected>GET</option>
+<option value="POST">POST</option>
+</select>
+</td><td></td></tr>
+<tr><td>title*</td><td><input id="title" name="title"/></td><td>Report Title</td></tr>
+<tr><td>template*</td><td><input id="template" name="template"/></td><td>Report Template</td></tr>
+<tr><td>theme</td><td><input id="theme" name="theme"/></td><td>Report Theme</td></tr>
+<tr><td>description</td><td><input id="description" name="description"/></td><td>Report Description</td></tr>
+<tr><td>contexts</td><td><input id="contexts" name="contexts"/></td><td>The name of the contexts to be included in the report, separated by '|'.</td></tr>
+<tr><td>sites</td><td><input id="sites" name="sites"/></td><td>The site URLs that should be included in the report, separated by '|'.</td></tr>
+<tr><td>sections</td><td><input id="sections" name="sections"/></td><td>The report sections that should be included, separated by '|'.</td></tr>
+<tr><td>includedConfidences</td><td><input id="includedConfidences" name="includedConfidences"/></td><td>Confidences that should be included in the report, separated by '|'. Accepted values are "False Positive", "Low", "Medium", "High", and "Confirmed".</td></tr>
+<tr><td>includedRisks</td><td><input id="includedRisks" name="includedRisks"/></td><td>Risks that should be included in the report, separated by '|'. Accepted values are "Informational", "Low", "Medium", and "High".</td></tr>
+<tr><td>reportFileName</td><td><input id="reportFileName" name="reportFileName"/></td><td>The file name of the generated report. This value overrides the reportFileNamePattern parameter.</td></tr>
+<tr><td>reportFileNamePattern</td><td><input id="reportFileNamePattern" name="reportFileNamePattern"/></td><td>Report File Name Pattern.</td></tr>
+<tr><td>reportDir</td><td><input id="reportDir" name="reportDir"/></td><td>Path to directory in which the generated report should be placed.</td></tr>
+<tr><td>display</td><td><input id="display" name="display"/></td><td>Display the generated report. Either "true" or "false".</td></tr>
+<tr><td></td><td><input id="button" value="generate" type="submit" zap-component="reports" zap-type="action" zap-name="generate"/>
+</td><td></td></tr>
+</table>
+</form>
+</body>

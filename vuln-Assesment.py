@@ -35,14 +35,13 @@ class Assesment:
         self.spider_scan = spider
         self.save_reports = save_reports
         self.scan_type = scan_type
-
-
+        self.test = 0
 
         #Debug mode is very verbose
         if self.debug:
             self.verbose = True
         
-
+    def setup_zap_server(self):
         #Test to see if zap server is already running
         #If it is shut it down. There could ne multiple zap servers running.
         #They all need to be shut down to make sure port 8080 is open
@@ -73,7 +72,6 @@ class Assesment:
             print('Waiting for Zap server...')
 
         Assesment.test_Zap(debug=self.debug, test_once=False)
-
                 
 
         #Connects to API. Connects to 127.0.0.1 on port 8080
@@ -90,6 +88,7 @@ class Assesment:
                     raise Exception("Could not connect to Zap server")
                 count+=1
                 time.sleep(2)
+
 
     def start_zap(self):
         #Start zap server
@@ -114,10 +113,11 @@ class Assesment:
                 count += 1
                 if test_once:
                     return False
-                if count ==40:
+                if count ==60:
                     raise Exception("Zap server did not start")
     
     def active_Scan(self, address):
+        
 
         fileName = f"{address}_{self.date}"
 
@@ -141,21 +141,25 @@ class Assesment:
 
         self.spider(address)
 
+
         #Start the active scan
-        
-        scanID = self.zap.ascan.scan(address)
+        self.zap.ascan
+        self.test =+ 1
+
+        scanID = self.zap.ascan.scan(url=address, inscopeonly=True)
+
 
         if self.verbose:
             print('Active Scanning target {}'.format(address))
             while int(self.zap.ascan.status(scanID)) < 100:
                 # Loop until the scanner has finished
-                print('Scan progress : {}%'.format(self.zap.ascan.status(scanID)))
+                if self.debug:
+                    print('Scan progress : {}%'.format(self.zap.ascan.status(scanID)))
                 time.sleep(2)
             print('Active Scan completed')
         else:
             while int(self.zap.ascan.status(scanID)) < 100:
                 time.sleep(2)
-        
         
         if self.debug:
             # Print vulnerabilities found by the scanning
@@ -165,7 +169,7 @@ class Assesment:
         
         #Get a report of the scan
         if self.save_reports:
-            self.get_Report(address)
+            self.get_Report(address, scanID)
         #Get any alerts 
         self.get_Alerts(address)
         
@@ -181,8 +185,11 @@ class Assesment:
             
             #Prints the progress
             while int(self.zap.spider.status(scanID)) < 100:
-                print('Spider progress %: {}'.format(self.zap.spider.status(scanID)))
-                time.sleep(1)
+
+                if self.debug:
+                    print('Spider progress %: {}'.format(self.zap.spider.status(scanID)))
+                time.sleep(2)
+
             print('Spider has completed!')
             # Prints the URLs the spider has crawled
         else:
@@ -197,6 +204,8 @@ class Assesment:
 
         #Loop through address and scan each one and time how long it takes
         for address in self.addresses:
+            #Will stop old server and start new
+            self.setup_zap_server()
             #Stop at end of list 
             if address == "":
                 break
@@ -235,7 +244,7 @@ class Assesment:
         file.write(msg)
         file.close()
     
-    def get_Report(self, address):
+    def get_Report(self, address, scanID):
 
         #Get the domain name
         dir_name = urlparse(address).netloc
@@ -246,16 +255,19 @@ class Assesment:
         if dir_exist == False:
             os.mkdir(dir_name)
             os.mkdir(dir_JSON)
-        
+
+
         #Connect to API and download html report
         headers = {
         'Accept': 'application/json',
         'X-ZAP-API-Key': self.API_key,
-        'sites': address
         }
 
-        response = requests.get(f"http://127.0.0.1:8080/OTHER/core/other/htmlreport/", params={
-        }, headers = headers)
+        params = {
+            'scanId': scanID
+        }
+
+        response = requests.get(f"http://127.0.0.1:8080/OTHER/core/other/htmlreport/", params= params, headers = headers)
 
         if (response.status_code == 200):
             self.file_name = f"{dir_name}/{self.date}.html"
@@ -272,11 +284,12 @@ class Assesment:
         headers = {
         'Accept': 'application/json',
         'X-ZAP-API-Key': self.API_key,
-        'sites': address
         }
 
-        response = requests.get(f"http://127.0.0.1:8080/OTHER/core/other/jsonreport/", params={
-        }, headers = headers)
+        params = {
+        }
+
+        response = requests.get(f"http://127.0.0.1:8080/OTHER/core/other/jsonreport/", params= params, headers = headers)
 
         if (response.status_code == 200):
             self.file_name = f"{dir_JSON}/{self.date}.json"
@@ -378,8 +391,6 @@ class Assesment:
     def send_alert_email(self):
         # creates SMTP session
         s = smtplib.SMTP('smtp.gmail.com', 587)
-
-        # start TLS for security
         s.starttls()
 
         # Authentication
@@ -393,7 +404,6 @@ class Assesment:
                     </html>
                     '''
 
-        #NEeeds improvments here
         file = open(self.file_name, 'r')
         report = file.read()
         file.close()
@@ -424,6 +434,8 @@ cronitor.Monitor.put(
     schedule="0 0 * * 1",
     assertions= ["metric.duration < 10 min"]
 )
+
+
 
 @cronitor.job("vuln-Assesment")
 def main():

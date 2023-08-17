@@ -2,6 +2,8 @@
 var view = 'console'
 var execution_chart
 var alert_chart
+var updated_graphs = false
+var Completed_count = 0
 
 //Updates image every 10 seconds. Needs to be random element to stop browser reusing image in cache
 const url = "https://cronitor.io/badges/uKVpG4/production/iVvSLth_Vq5UwQMd0yDkm40Ivjg.svg"
@@ -125,20 +127,24 @@ function console_click(){
 
 function update_console(){
     const xhr = new XMLHttpRequest();
-    let console_text = document.getElementById('output-text').value
 
     xhr.open("GET", '/console', true);
         xhr.setRequestHeader("Content-Type", "application/json");
         xhr.onreadystatechange = function () {
             if (xhr.readyState === 4 && xhr.status === 200) {
-                const response = xhr.responseText
+                var response = xhr.responseText
+
+                var to_compare = (response.match('Completed') || []).length
+
+                console.log(to_compare)
 
                 //Update graphs when a scan is finished
-                if (console_text.localeCompare(response) == true){
+                if (to_compare > Completed_count){
+                    Completed_count++
+                    console.log('Match made')
                     get_execution_graph_data()
                     get_alert_graph_data()
                 }
-
 
                 document.getElementById('output-text').value = xhr.responseText
             };
@@ -248,7 +254,7 @@ function get_alerts(){
 
 //Scrolls the user down so other elements are within view
 function scroll_down_page(){
-    const scroll = document.documentElement.scrollHeight - window.innerHeight - 150
+    const scroll = document.documentElement.scrollHeight - window.innerHeight - 200
     window.scrollTo(0, scroll)
 }
 
@@ -267,6 +273,7 @@ function sleep(ms) {
 
 setInterval(function(){
     get_checked_settings()
+    
 },30000)
 
 
@@ -318,7 +325,6 @@ function get_execution_graph_data(){
                     dates.push(graph_data[i].Date)
                     data.push(graph_data[i].Time)
                 }
-                console.log(dates)
                 dates.reverse()
                 data.reverse()
 
@@ -447,6 +453,7 @@ function create_graph_execution_time(dates, data){
     //Execution time chart
     let ctx = document.getElementById('execution_time_canvas');
 
+    //Checks if chart already exist if it does destroy it
     if (typeof execution_chart === 'object'){
         execution_chart.destroy()
     }
@@ -469,9 +476,20 @@ function create_graph_execution_time(dates, data){
 }
 
 
+
 document.addEventListener("DOMContentLoaded", function() {
     get_execution_graph_data()
     get_alert_graph_data()
+
+    //Add event listiner to redirect user to reports page
+    for (let i =0; i < 3; i++){
+        var info_id = 'info_display_'+i
+
+        var redirect_report_button = document.getElementById(info_id)
+        redirect_report_button.addEventListener("click", function() {
+            window.location.href = "/addresses";
+        });
+    }
 })
 
 

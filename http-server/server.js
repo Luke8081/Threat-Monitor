@@ -90,7 +90,7 @@ async function db_all(query){
 
 //Gets the sum of alerts for all the websites scanned
 async function get_alerts(){
-    let database = await db_all('SELECT SUM(Low_Alert) AS Low_Alert, SUM(Medium_Alert) AS Medium_Alert, SUM(High_Alert) AS High_Alert FROM alert_summary')
+    let database = await db_all('SELECT Low_Alert AS Low_Alert, Medium_Alert AS Medium_Alert, High_Alert AS High_Alert FROM alert_summary ORDER BY Date DESC LIMIT 1')
     return{
         Low_Alert: database[0].Low_Alert,
         Medium_Alert: database[0].Medium_Alert,

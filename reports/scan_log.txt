@@ -1,3 +1,25 @@
 
 Scanned 1 addresses in 148.59 seconds. Number of alerts: 8. Completed on 2023-08-08 16:43:09.
 Scanned 1 addresses in 146.9 seconds. Number of alerts: 8. Completed on 2023-08-08 16:52:22.
+Scanned 2 addresses in 299.47 seconds. Number of alerts: 125. Completed on 2023-08-10 16:06:54.
+Scanned 2 addresses in 301.28 seconds. Number of alerts: 125. Completed on 2023-08-11 15:01:08.
+Scanned 2 addresses in 292.06 seconds. Number of alerts: 125. Completed on 2023-08-11 15:07:24.
+Scanned 1 addresses in 147.48 seconds. Number of alerts: 117. Completed on 2023-08-11 15:32:51.
+Scanned 1 addresses in 147.41 seconds. Number of alerts: 117. Completed on 2023-08-11 15:44:29.
+Scanned 1 addresses in 147.91 seconds. Number of alerts: 117. Completed on 2023-08-11 15:53:37.
+Scanned 1 addresses in 146.97 seconds. Number of alerts: 117. Completed on 2023-08-11 16:00:58.
+Scanned 1 addresses in 142.69 seconds. Number of alerts: 117. Completed on 2023-08-11 16:25:53.
+Scanned 1 addresses in 147.44 seconds. Number of alerts: 117. Completed on 2023-08-11 16:53:03.
+Scanned 1 addresses in 144.55 seconds. Number of alerts: 117. Completed on 2023-08-11 17:06:11.
+Scanned 1 addresses in 156.24 seconds. Number of alerts: 117. Completed on 2023-08-11 20:59:56.
+Scanned 1 addresses in 148.15 seconds. Number of alerts: 117. Completed on 2023-08-14 13:08:56.
+Scanned 2 addresses in 18.18 seconds. Number of alerts: 126. Completed on 2023-08-17 11:55:29.
+Scanned 2 addresses in 13.46 seconds. Number of alerts: 126. Completed on 2023-08-17 12:24:02.
+Scanned 2 addresses in 9.55 seconds. Number of alerts: 126. Completed on 2023-08-17 12:30:13.
+Scanned 2 addresses in 12.54 seconds. Number of alerts: 126. Completed on 2023-08-17 12:31:52.
+Scanned 2 addresses in 13.39 seconds. Number of alerts: 126. Completed on 2023-08-17 12:34:47.
+Scanned 2 addresses in 13.57 seconds. Number of alerts: 126. Completed on 2023-08-17 12:37:53.
+Scanned 2 addresses in 13.69 seconds. Number of alerts: 126. Completed on 2023-08-17 13:05:16.
+Scanned 2 addresses in 16.04 seconds. Number of alerts: 126. Completed on 2023-08-17 13:14:34.
+Scanned 2 addresses in 10.06 seconds. Number of alerts: 126. Completed on 2023-08-17 15:13:53.
+Scanned 2 addresses in 29.64 seconds. Number of alerts: 9. Completed on 2023-08-17 15:18:25.
