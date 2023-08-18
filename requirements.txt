@@ -1,6 +1,0 @@
-art==5.9
-cronitor==4.6.0
-python-dotenv==1.0.0
-python_owasp_zap_v2.4==0.0.22
-Requests==2.31.0
-setuptools==59.6.0
