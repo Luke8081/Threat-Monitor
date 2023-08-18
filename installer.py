@@ -42,8 +42,8 @@ def set_database():
 
     conn.execute('''CREATE TABLE IF NOT EXISTS execution_time
             (Date           DATE   NOT NULL,
-            Time           REAL    NOT NULL),
-            Alert           INT    NOT NULL;''')
+            Time           REAL    NOT NULL,
+            Alert           INT    NOT NULL);''')
 
     conn.close()
 
